@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://civic-resolve.onrender.com';
 
 // Helper function with retry logic
 const fetchWithRetry = async (url, options, retries = 3) => {
