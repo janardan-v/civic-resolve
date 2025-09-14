@@ -11,10 +11,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
 
     <!-- API Client Script -->
     <script src="../../js/api-client.js"></script>
-    
+
     <!-- New Complaint JS -->
     <script src="newComplaint.js"></script>
 
@@ -410,8 +412,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-step h2 {
@@ -420,7 +429,7 @@
             font-size: 1.8rem;
         }
 
-        .form-step > p {
+        .form-step>p {
             color: var(--text-secondary);
             margin-bottom: 30px;
         }
@@ -629,6 +638,11 @@
             border-radius: var(--border-radius);
         }
 
+        #location-map{
+            height: 300px;
+            width: 100%;
+        }
+
         .location-coords {
             display: flex;
             gap: 20px;
@@ -710,16 +724,19 @@
             background-color: var(--text-light);
         }
 
-        .btn-next, .btn-submit {
+        .btn-next,
+        .btn-submit {
             background-color: var(--primary-color);
             color: white;
         }
 
-        .btn-next:hover, .btn-submit:hover {
+        .btn-next:hover,
+        .btn-submit:hover {
             background-color: var(--primary-dark);
         }
 
-        .btn-next:disabled, .btn-submit:disabled {
+        .btn-next:disabled,
+        .btn-submit:disabled {
             background-color: var(--border-color);
             color: var(--text-light);
             cursor: not-allowed;
@@ -760,6 +777,7 @@
                 opacity: 0;
                 transform: translateY(50px) scale(0.9);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
@@ -786,10 +804,12 @@
                 opacity: 0;
                 transform: scale(0.3);
             }
+
             50% {
                 opacity: 1;
                 transform: scale(1.1);
             }
+
             100% {
                 opacity: 1;
                 transform: scale(1);
@@ -966,7 +986,7 @@
                             <a href="#"><i class="bi bi-plus-circle"></i> New Complaint</a>
                         </li>
                         <li>
-                            <a href="#"><i class="bi bi-list-check"></i> My Complaints</a>
+                            <a href="my-complaints.html"><i class="bi bi-list-check"></i> My Complaints</a>
                         </li>
                         <li>
                             <a href="near-me.html"><i class="bi bi-geo-alt"></i> Near Me</a>
@@ -1065,7 +1085,7 @@
                         <div class="form-step active" id="step-1">
                             <h2>Upload Photo of the Issue</h2>
                             <p>Please provide a clear image of the civic issue you want to report</p>
-                            
+
                             <div class="upload-area" id="upload-area">
                                 <div class="upload-content">
                                     <i class="bi bi-camera upload-icon"></i>
@@ -1090,7 +1110,7 @@
                         <div class="form-step" id="step-2">
                             <h2>Describe the Issue</h2>
                             <p>Select the type of issue and provide additional details</p>
-                            
+
                             <div class="issue-categories">
                                 <h3>Select Issue Category</h3>
                                 <div class="category-grid">
@@ -1123,7 +1143,9 @@
 
                             <div class="description-area">
                                 <h3>Additional Details</h3>
-                                <textarea id="description-input" placeholder="Please provide detailed description of the issue, when it started, and any other relevant information..." rows="6"></textarea>
+                                <textarea id="description-input"
+                                    placeholder="Please provide  any additional details..."
+                                    rows="6"></textarea>
                                 <div class="character-count">
                                     <span id="char-count">0</span>/500 characters
                                 </div>
@@ -1139,16 +1161,16 @@
                         <div class="form-step" id="step-3">
                             <h2>Select Location</h2>
                             <p>Please pinpoint the exact location of the issue on the map</p>
-                            
+
                             <div class="location-container">
                                 <div class="location-input">
                                     <i class="bi bi-geo-alt"></i>
                                     <input type="text" id="address-input" placeholder="Enter address or landmark">
                                     <button type="button" id="detect-location" class="detect-btn">
-                                        <i class="bi bi-crosshair"></i> Detect Location
+                                        <i class="bi bi-crosshair" style="color: white;"></i> Detect Location
                                     </button>
                                 </div>
-                                
+
                                 <div class="map-container">
                                     <div id="location-map">
                                         <div class="map-placeholder">
@@ -1178,7 +1200,7 @@
                         <div class="form-step" id="step-4">
                             <h2>Review Your Complaint</h2>
                             <p>Please review all the information before submitting your complaint</p>
-                            
+
                             <div class="review-container">
                                 <div class="review-section">
                                     <h3><i class="bi bi-camera"></i> Uploaded Photo</h3>
@@ -1250,5 +1272,124 @@
                 </button>
             </div>
         </div>
+
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script>
+            // DOM Element References
+            const addressInput = document.getElementById('address-input');
+            const detectBtn = document.getElementById('detect-location');
+            const selectedLocationDiv = document.getElementById('selected-location');
+            const locationAddress = document.getElementById('location-address');
+            const locationLat = document.getElementById('location-lat');
+            const locationLng = document.getElementById('location-lng');
+
+            let map;
+            let marker;
+
+            // 1. INITIALIZE THE MAP
+            // The map is centered on a default location (Delhi, India) and zoom level.
+            map = L.map('location-map').setView([28.6139, 77.2090], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // 2. SETUP "DETECT LOCATION" BUTTON
+            detectBtn.addEventListener('click', () => {
+                if (navigator.geolocation) {
+                    // Use the browser's geolocation API to get the current position.
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            const { latitude, longitude } = pos.coords;
+                            // This is the core function call. We pass the detected coordinates 
+                            // and a close-up zoom level (15) to update the map.
+                            updateMarkerAndLocation(latitude, longitude, 15);
+                        },
+                        () => {
+                            alert("Error: Unable to fetch your location. Please ensure location services are enabled.");
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by your browser.");
+                }
+            });
+
+            // 3. CORE FUNCTION TO UPDATE MAP AND UI
+            /**
+             * This function is the heart of the logic. It does three things:
+             * A) Moves the map's view to the new coordinates.
+             * B) Places (or moves) a marker at that exact spot.
+             * C) Fetches the human-readable address and updates the UI text.
+             * @param {number} lat - The latitude.
+             * @param {number} lng - The longitude.
+             * @param {number} zoomLevel - How closely to zoom in on the location.
+             */
+            function updateMarkerAndLocation(lat, lng, zoomLevel) {
+                // A. Center the map on the new latitude and longitude with the specified zoom.
+                map.setView([lat, lng], zoomLevel);
+
+                // B. If a marker already exists, move it. Otherwise, create a new draggable marker.
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                    // Add an event listener for when the user stops dragging the marker.
+                    marker.on('dragend', (e) => {
+                        const { lat, lng } = e.target.getLatLng();
+                        updateMarkerAndLocation(lat, lng, map.getZoom());
+                    });
+                }
+
+                // C. Fetch the address and update the text below the map.
+                // This uses the OpenStreetMap (Nominatim) API for reverse geocoding.
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        // Fallback to coordinates if no address is found
+                        const address = data.display_name || `No address found for these coordinates.`;
+                        updateLocationUI(lat, lng, address);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching address:', error);
+                        updateLocationUI(lat, lng, "Could not fetch address.");
+                    });
+            }
+
+            /**
+             * A helper function to neatly update the HTML elements with the new location info.
+             */
+            function updateLocationUI(lat, lng, address) {
+                locationAddress.textContent = address;
+                locationLat.textContent = lat.toFixed(6); // Show lat with 6 decimal places
+                locationLng.textContent = lng.toFixed(6); // Show lng with 6 decimal places
+                selectedLocationDiv.style.display = 'block'; // Make the info box visible
+            }
+
+            // --- Optional Bonus Features ---
+
+            // Allow searching for an address in the input field
+            addressInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = addressInput.value;
+                    if (!query) return;
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.length > 0) {
+                                const { lat, lon } = data[0];
+                                updateMarkerAndLocation(parseFloat(lat), parseFloat(lon), 16);
+                            } else {
+                                alert('Location not found.');
+                            }
+                        });
+                }
+            });
+
+            // Allow clicking on the map to select a location
+            map.on('click', (e) => {
+                const { lat, lng } = e.latlng;
+                updateMarkerAndLocation(lat, lng, map.getZoom());
+            });
+        </script>
     </body>
 </html>
