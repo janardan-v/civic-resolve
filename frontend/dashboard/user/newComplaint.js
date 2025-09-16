@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', async function () {
+    function setCurrentDate() {
+        const dateElement = document.getElementById('current-date');
+        const now = new Date();
+
+        // Options for formatting the date
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+
+        dateElement.textContent = now.toLocaleDateString('en-US', options);
+    }
+    setCurrentDate();
+
+    // Prevent default form submissions
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -413,8 +430,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         // Update location review
         const reviewCoords = document.getElementById('review-coords');
+        const reviewAddress = document.getElementById('review-address');
+        
         if (reviewCoords && currentLocation.lat && currentLocation.lng) {
             reviewCoords.textContent = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
+        }
+        
+        if (reviewAddress && locationAddress) {
+            reviewAddress.textContent = locationAddress.textContent || 'No address provided';
         }
     }
 
@@ -446,11 +469,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const photoFile = photoInput.files[0];
 
                 if (!photoFile) throw new Error('Photo file is missing');
-                
+
                 // Simplified category mapping from your original code
                 let categoryIdToSubmit = selectedCategoryId;
                 if (selectedCategory === 'roads') {
-                     categoryIdToSubmit = '0e6e0a5b-258b-4eec-8817-564fbb1f0009';
+                    categoryIdToSubmit = '0e6e0a5b-258b-4eec-8817-564fbb1f0009';
                 }
 
                 formData.append('title', generateTitle());

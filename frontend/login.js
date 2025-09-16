@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 const user = JSON.parse(userJson);
                 if (user && user.role) {
                     if (user.role === 'super_admin' || user.role === 'department_admin') {
-                        window.location.href = 'dashboard/user/admin-dashboard.html';
+                        window.location.href = 'dashboard/admin/admin-dashboard.html';
                     } else {
                         window.location.href = 'dashboard/user/user-dashboard.html';
                     }
@@ -77,6 +77,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             const email = document.getElementById('user-email')?.value;
             const password = document.getElementById('user-password')?.value;
 
+            console.log('Login attempt:', { email, hasPassword: !!password });
+
             if (!email || !password) {
                 showError('Please enter both email and password');
                 return;
@@ -86,34 +88,64 @@ document.addEventListener('DOMContentLoaded', async function () {
             loginButton.textContent = 'Logging in...';
 
             try {
-                // Use the API client instead of direct fetch
+                console.log('Calling authAPI.login...');
+                
+                // Use the API client with proper error handling
                 const response = await window.authAPI.login({ email, password });
+                
+                console.log('Login API response:', response);
 
-                if (response && response.success) {
+                // Check if response is successful
+                if (response && response.success && response.data) {
                     // Store user data and token from your backend response
-                    localStorage.setItem('token', response.data.accessToken);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    if (response.data.accessToken) {
+                        localStorage.setItem('token', response.data.accessToken);
+                        console.log('Token stored successfully');
+                    }
+                    
+                    if (response.data.user) {
+                        localStorage.setItem('user', JSON.stringify(response.data.user));
+                        console.log('User data stored:', response.data.user);
+                    }
 
                     showSuccess('Login successful! Redirecting...');
 
                     setTimeout(() => {
                         const user = response.data.user;
                         if (user && user.role) {
+                            console.log('Redirecting based on role:', user.role);
                             if (user.role === 'super_admin' || user.role === 'department_admin') {
-                                window.location.href = 'dashboard/user/admin-dashboard.html';
+                                window.location.href = 'dashboard/admin/admin-dashboard.html';
                             } else {
                                 window.location.href = 'dashboard/user/user-dashboard.html';
                             }
                         } else {
+                            console.log('No role found, redirecting to user dashboard');
                             window.location.href = 'dashboard/user/user-dashboard.html';
                         }
                     }, 1500);
                 } else {
-                    showError(response.message || 'Login failed. Please try again.');
+                    console.error('Login failed - invalid response structure:', response);
+                    showError(response?.message || 'Login failed. Please check your credentials.');
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showError('Login failed. Please check your credentials and try again.');
+                console.error('Login error details:', error);
+                
+                // More specific error handling
+                if (error.message) {
+                    if (error.message.includes('Invalid credentials') || 
+                        error.message.includes('User not found') ||
+                        error.message.includes('401')) {
+                        showError('Invalid email or password. Please try again.');
+                    } else if (error.message.includes('Network') || 
+                               error.message.includes('fetch')) {
+                        showError('Network error. Please check your connection and try again.');
+                    } else {
+                        showError(error.message);
+                    }
+                } else {
+                    showError('Login failed. Please check your credentials and try again.');
+                }
             } finally {
                 loginButton.disabled = false;
                 loginButton.textContent = 'Log In';

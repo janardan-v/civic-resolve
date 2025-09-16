@@ -751,3 +751,103 @@ function addNewComment(commentText) {
     commentsList.appendChild(newComment);
     commentsList.scrollTop = commentsList.scrollHeight;
 }
+
+// Simple Logout functionality - Add this at the end of the file
+function initializeLogout() {
+    const logoutBtn = document.getElementById('logout-btn');
+    const logoutLink = document.querySelector('.logout'); // Updated to match your HTML
+    const logoutNavItem = document.querySelector('[data-action="logout"]');
+    
+    // Simple logout function
+    function logout() {
+        // Clear all authentication data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('refreshToken');
+        
+        // Clear session storage as well
+        sessionStorage.clear();
+        
+        console.log('User logged out successfully');
+        
+        // Redirect to home page or login page
+        window.location.href = '../../index.html';
+    }
+    
+    // Attach logout handlers to all possible logout elements
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
+    if (logoutNavItem) {
+        logoutNavItem.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
+    // Add keyboard shortcut (Ctrl+L)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'l') {
+            e.preventDefault();
+            logout();
+        }
+    });
+    
+    console.log('Simple logout functionality initialized');
+}
+
+// Auto-logout on token expiration (optional but recommended)
+function checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        console.log('No token found, redirecting to login');
+        window.location.href = '../../login.html';
+        return;
+    }
+    
+    try {
+        // Decode JWT token to check expiration
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        
+        if (payload.exp && payload.exp < currentTime) {
+            console.log('Token expired, logging out');
+            alert('Your session has expired. Please log in again.');
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '../../login.html';
+        }
+    } catch (error) {
+        console.error('Error checking token expiration:', error);
+        // If token is malformed, clear it and redirect
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '../../login.html';
+    }
+}
+
+// Initialize logout when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    
+    // Initialize simple logout functionality
+    initializeLogout();
+    
+    // Check token expiration immediately
+    checkTokenExpiration();
+});
+
+// Check token expiration every 10 minutes (optional)
+setInterval(checkTokenExpiration, 10 * 60 * 1000);

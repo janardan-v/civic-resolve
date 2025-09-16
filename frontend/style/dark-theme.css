@@ -10,6 +10,7 @@
     --dark-footer: #111111;
     --dark-card: #2d2d2d;
     --dark-border: #333333;
+    --dark-author-role-color: #22c55e; 
 }
 
 body.dark-theme {
@@ -58,6 +59,32 @@ body.dark-theme .new-hero {
 body.dark-theme .hero-content h1,
 body.dark-theme .hero-content p {
     color: var(--dark-text-primary);
+}
+
+/* Testimonials section dark styling */
+body.dark-theme .testimonials-section {
+    background-color: var(--dark-bg);
+}
+
+body.dark-theme .section-subtitle {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-theme .testimonial-card {
+    background-color: var(--dark-card);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6); /* stronger shadow in dark mode */
+}
+
+body.dark-theme .testimonial-text {
+    color: var(--dark-text-secondary);
+}
+
+body.dark-theme .testimonial-author .author-name {
+    color: white;
+}
+
+body.dark-theme .testimonial-author .author-role {
+    color: var(--dark-author-role-color);
 }
 
 /* Stats section dark styling */
