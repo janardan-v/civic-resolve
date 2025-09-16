@@ -14,11 +14,10 @@ router.route('/submit').post(uploadFiles, handleMulterError, submitReport);
 // Get user's reports
 router.route('/my-reports').get(getMyReports);
 
-// Get specific report by ID
-router.route('/:reportId').get(getReportById);
-
 // Get all reports - Public route
 router.route('/all').get(getAllReports);
 
-export default router;
+// Get specific report by ID
+router.route('/:reportId').get(getReportById);
 
+export default router;

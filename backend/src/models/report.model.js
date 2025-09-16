@@ -62,7 +62,7 @@ const reportSchema = new Schema(
             lowercase: true
         }
     },
-    { timestamps: true }
+    { timestamps: true , collection: 'reports'}
 );
 
 export const Report = mongoose.model('Report', reportSchema);

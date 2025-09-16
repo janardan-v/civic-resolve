@@ -5,7 +5,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import crypto from 'crypto';
-import sendEmail from '../utils/sendEmail.js';
+import {sendEmail} from '../utils/sendEmail.js';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/;
 

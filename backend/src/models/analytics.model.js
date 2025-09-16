@@ -22,7 +22,7 @@ const analyticSchema = new Schema(
         categoryId: { 
             type: String,
             ref: 'Category',
-            required: true
+            required: false
         },
         generatedAt: {
             type: Date,
