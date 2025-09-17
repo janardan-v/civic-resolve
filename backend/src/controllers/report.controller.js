@@ -7,6 +7,7 @@ import { ReportHistory } from '../models/reportHistory.model.js';
 import { Notification } from '../models/notifications.model.js';
 import { Category } from '../models/category.model.js';
 import { User } from '../models/user.model.js';
+import { generateAnalytics } from '../utils/analytics.service.js';
 
 // Submit a new civic issue report
 const submitReport = asyncHandler(async (req, res) => {
@@ -62,6 +63,9 @@ const submitReport = asyncHandler(async (req, res) => {
         changedByUserId: userId,
         remarks: 'Report submitted by user.'
     });
+    
+    // Trigger live analytics update
+    await generateAnalytics();
 
     return res.status(201).json(
         new ApiResponse(201, newReport, 'Report submitted successfully.')
@@ -69,18 +73,6 @@ const submitReport = asyncHandler(async (req, res) => {
 });
 
 // Get reports for logged-in user
-// const getMyReports = asyncHandler(async (req, res) => {
-//     const { userId } = req.user;
-
-//     const reports = await Report.find({ userId })
-//         .populate('categoryId', 'categoryId name description')  // Populate category info
-//         .sort({ createdAt: -1 });
-
-//     return res.status(200).json(
-//         new ApiResponse(200, reports, 'Reports fetched successfully.')
-//     );
-// });
-
 const getMyReports = asyncHandler(async (req, res) => {
     // Step 1: Get the logged-in user's UUID from the request object.
     const loggedInUserUUID = req.user.userId;
@@ -203,6 +195,9 @@ const updateReportStatus = asyncHandler(async (req, res) => {
         });
     }
 
+    // Trigger live analytics update
+    await generateAnalytics();
+
     return res.status(200).json(
         new ApiResponse(200, report, 'Report status updated successfully and notification sent.')
     );
@@ -215,6 +210,3 @@ export {
     getAllReports,
     getReportById
 };
-
-
-

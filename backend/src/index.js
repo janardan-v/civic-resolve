@@ -24,18 +24,6 @@ connectDB()
             console.log(`Server is running at port: ${PORT}`);
             console.log(`Login endpoint available at: http://localhost:${PORT}/api/v1/users/login`);
 
-            // Schedule the analytics update task
-            // This cron job will run every day at 00:00 (midnight)
-            cron.schedule('*/5 * * * *', async () => {
-                console.log('Running 5-minute analytics generation task...');
-                try {
-                    await generateAnalytics();
-                    console.log('5-minute analytics task completed successfully.');
-                } catch (error) {
-                    console.error('Error during 5-minute analytics task:', error);
-                }
-            });
-
             // Schedule the notification task
             // This cron job will run every 15 minutes
             cron.schedule('*/15 * * * *', async () => {
