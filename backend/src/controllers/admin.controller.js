@@ -6,6 +6,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
+import { generateAnalytics } from '../utils/analytics.service.js';
 
 // Admin authorization middleware
 const isAdmin = asyncHandler(async (req, res, next) => {
@@ -57,6 +58,9 @@ const updateReportStatus = asyncHandler(async (req, res) => {
         reportId: report.reportId,
         message: `Your report status has been updated to "${newStatus}".`,
     });
+    
+    // Trigger live analytics update
+    await generateAnalytics();
 
     return res.status(200).json(
         new ApiResponse(200, report, `Report status updated to ${newStatus}.`)
@@ -107,6 +111,9 @@ const assignReport = asyncHandler(async (req, res) => {
         reportId: report.reportId,
         message: `A new report has been assigned to you.`,
     });
+    
+    // Trigger live analytics update
+    await generateAnalytics();
 
     return res.status(200).json(
         new ApiResponse(200, newAssignment, 'Report assigned successfully.')
@@ -154,6 +161,9 @@ const resolveReport = asyncHandler(async (req, res) => {
         reportId: report.reportId,
         message: `Your report status has been updated to "resolved".`,
     });
+    
+    // Trigger live analytics update
+    await generateAnalytics();
 
     return res.status(200).json(
         new ApiResponse(200, report, `Report resolved successfully.`)
