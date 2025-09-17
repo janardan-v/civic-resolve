@@ -1,47 +1,81 @@
+// Make sure all necessary models are imported at the top of the file
 import { Report } from "../models/report.model.js";
 import { User } from "../models/user.model.js";
 import { Notification } from "../models/notifications.model.js";
+import { ReportAssignment } from "../models/reportAssignment.model.js";
 import { sendEmail } from "./sendEmail.js";
 
 const sendPendingReportNotifications = async () => {
     try {
         console.log("Checking for pending reports to send notifications...");
 
+        // Step 1: Find all reports that are pending and older than two days.
         const twoDaysAgo = new Date();
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
 
-        const pendingReports = await Report.find({
+        const oldPendingReports = await Report.find({
             status: "pending",
             createdAt: { $lte: twoDaysAgo }
-        }).populate("assignedTo");
+        }).lean(); // Use .lean() for a faster, read-only query
 
-        if (pendingReports.length === 0) {
+        if (oldPendingReports.length === 0) {
             console.log("No pending reports older than 48 hours found.");
             return;
         }
 
-        for (const report of pendingReports) {
-            if (report.assignedTo) {
-                const assignedUser = await User.findById(report.assignedTo);
-                if (assignedUser) {
-                    const notificationMessage = `Reminder: Report #${report.reportId} has been pending for over 48 hours. Please take action.`;
-                    
-                    // Create a new notification entry
-                    await Notification.create({
-                        userId: assignedUser._id,
-                        message: notificationMessage,
-                        type: "reminder",
-                        reportId: report._id
+        // Step 2: Get the UUIDs of these reports to find their assignments.
+        const reportUUIDs = oldPendingReports.map(report => report.reportId);
+
+        // Step 3: Find all the assignments related to these specific reports.
+        const assignments = await ReportAssignment.find({
+            reportId: { $in: reportUUIDs }
+        }).lean();
+
+        if (assignments.length === 0) {
+            console.log("Found old pending reports, but they have no assignments.");
+            return;
+        }
+
+        // Step 4: Gather all unique user UUIDs from the assignments.
+        const userUUIDs = [...new Set(assignments.map(a => a.assigned_to_userId).filter(id => id))];
+
+        // Step 5: Fetch all the assigned users' details in one efficient query.
+        const users = await User.find({ userId: { $in: userUUIDs } })
+            .select("userId username email") // Select only necessary fields        
+            .lean();
+
+        // Step 6: Create maps for easy and fast lookups inside the loop.
+        const userMap = new Map(users.map(user => [user.userId, user]));
+        const reportMap = new Map(oldPendingReports.map(report => [report.reportId, report]));
+
+        // Step 7: Loop through the assignments and send notifications.
+        for (const assignment of assignments) {
+            const assignedUser = userMap.get(assignment.assigned_to_userId);
+            const report = reportMap.get(assignment.reportId);
+
+            if (assignedUser && report) {
+                const notificationMessage = `Reminder: Report titled "${report.title}" has been pending for over 48 hours. Please take action.`;
+
+                // Create a new notification entry in the database
+                await Notification.create({
+                    userId: assignedUser._id, // Use the user's ObjectId for the reference
+                    message: notificationMessage,
+                    type: "reminder",
+                    reportId: report._id // Use the report's ObjectId for the reference
+                });
+
+                // Send an email notification
+                if (assignedUser && report && assignedUser.email) {
+                    await sendEmail({
+                        email: assignedUser.email,
+                        subject: "Pending Report Reminder",
+                        message: notificationMessage
                     });
 
-                    // Send an email notification
-                    await sendEmail(
-                        assignedUser.email,
-                        "Pending Report Reminder",
-                        notificationMessage
-                    );
+                    console.log(`Notification sent for report "${report.title}" to user ${assignedUser.username}.`);
 
-                    console.log(`Notification and email sent for report ${report.reportId} to user ${assignedUser.username}.`);
+                } else {
+                    console.log(`Skipping notification for report "${report.title}" due to missing user details or email.`);
                 }
             }
         }

@@ -69,31 +69,92 @@ const submitReport = asyncHandler(async (req, res) => {
 });
 
 // Get reports for logged-in user
+// const getMyReports = asyncHandler(async (req, res) => {
+//     const { userId } = req.user;
+
+//     const reports = await Report.find({ userId })
+//         .populate('categoryId', 'categoryId name description')  // Populate category info
+//         .sort({ createdAt: -1 });
+
+//     return res.status(200).json(
+//         new ApiResponse(200, reports, 'Reports fetched successfully.')
+//     );
+// });
+
 const getMyReports = asyncHandler(async (req, res) => {
-    const { userId } = req.user;
+    // Step 1: Get the logged-in user's UUID from the request object.
+    const loggedInUserUUID = req.user.userId;
 
-    const reports = await Report.find({ userId })
-        .populate('categoryId', 'categoryId name description')  // Populate category info
-        .sort({ createdAt: -1 });
+    // Step 2: Find reports where the 'userId' field (a UUID) matches the logged-in user's UUID.
+    const myReports = await Report.find({ userId: loggedInUserUUID })
+        .sort({ createdAt: -1 })
+        .lean();
 
+    // Step 3: Handle the case where the user has no reports.
+    if (!myReports || myReports.length === 0) {
+        return res.status(200).json(
+            new ApiResponse(200, [], 'User has not created any reports yet.')
+        );
+    }
+
+    // Step 4: Collect all unique category UUIDs from these reports.
+    const categoryUUIDs = [...new Set(myReports.map(report => report.categoryId).filter(id => id))];
+
+    // Step 5: Find all matching category documents in a single query.
+    // NOTE: This assumes the UUID field in your Category model is named 'categoryId'.
+    const categories = await Category.find({ categoryId: { $in: categoryUUIDs } })
+        .select("name description categoryId");
+
+    // Step 6: Create a map for quick category lookups.
+    const categoryMap = new Map(categories.map(category => [category.categoryId, category]));
+
+    // Step 7: Manually populate each report.
+    const populatedReports = myReports.map(report => ({
+        ...report,
+        // Attach the full user object from the request.
+        userId: req.user,
+        // Replace the category ID with the full category object from our map.
+        categoryId: categoryMap.get(report.categoryId) || report.categoryId
+    }));
+
+    // Step 8: Send the final, populated data.
     return res.status(200).json(
-        new ApiResponse(200, reports, 'Reports fetched successfully.')
+        new ApiResponse(200, populatedReports, 'User reports fetched successfully.')
     );
 });
 
 // Get all reports (admin)
 const getAllReports = asyncHandler(async (req, res) => {
-    console.log('Entered getAllReports controller');
+    // Step 1: Get all reports as plain objects.
+    const reports = await Report.find().sort({ createdAt: -1 }).lean();
 
-    const reports = await Report.find()
-        // .populate('userId', 'userId username name email')      // Populate user info
-        // .populate('categoryId', 'categoryId name description') // Populate category info
-        .sort({ createdAt: -1 });
+    if (!reports || reports.length === 0) {
+        throw new ApiError(404, 'No reports found.');
+    }
 
-    console.log(`Fetched ${reports.length} reports from DB.`);
+    // Step 2: Collect all unique IDs from the reports.
+    const userUUIDs = [...new Set(reports.map(report => report.userId).filter(id => id))];
+    const categoryUUIDs = [...new Set(reports.map(report => report.categoryId).filter(id => id))]; // --- New for Category ---
+
+    // Step 3: Find all matching users and categories in parallel for efficiency.
+    const [users, categories] = await Promise.all([
+        User.find({ userId: { $in: userUUIDs } }).select("username name userId"),
+        Category.find({ categoryId: { $in: categoryUUIDs } }).select("name description categoryId") // --- New for Category ---
+    ]);
+
+    // Step 4: Create maps for quick lookups.
+    const userMap = new Map(users.map(user => [user.userId, user]));
+    const categoryMap = new Map(categories.map(category => [category.categoryId, category])); // --- New for Category ---
+
+    // Step 5: Manually replace the IDs in each report with the full objects.
+    const populatedReports = reports.map(report => ({
+        ...report,
+        userId: userMap.get(report.userId) || report.userId,
+        categoryId: categoryMap.get(report.categoryId) || report.categoryId // --- New for Category ---
+    }));
 
     return res.status(200).json(
-        new ApiResponse(200, reports, 'All reports fetched successfully.')
+        new ApiResponse(200, populatedReports, 'All reports fetched successfully.')
     );
 });
 

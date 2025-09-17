@@ -456,11 +456,11 @@
             .stats-cards {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .charts-row {
                 flex-direction: column;
             }
-            
+
             .chart-container.large,
             .chart-container.medium {
                 flex: 1;
@@ -485,19 +485,17 @@
             <a href="admin-dashboard.html" class="nav-item">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
-            <a href="#" class="nav-item">
+            <a href="complaints.html" class="nav-item">
                 <i class="fas fa-tasks"></i> Manage Complaints
             </a>
-            <a href="#" class="nav-item">
-                <i class="fas fa-users"></i> User Management
-            </a>
+
             <a href="#" class="nav-item">
                 <i class="fas fa-building"></i> Departments
             </a>
             <a href="#" class="nav-item active">
                 <i class="fas fa-chart-bar"></i> Analytics
             </a>
-            <a href="#" class="nav-item">
+            <a href="settings.html" class="nav-item">
                 <i class="fas fa-cog"></i> Settings
             </a>
             <a href="../../index.html" class="nav-item logout">
@@ -522,7 +520,8 @@
                 </div>
                 <div class="admin-info">
                     <span>Admin</span>
-                    <img src="https://img.icons8.com/?size=100&id=n7xIHKJORoVJ&format=png&color=000000" alt="Admin" class="admin-avatar">
+                    <img src="https://img.icons8.com/?size=100&id=n7xIHKJORoVJ&format=png&color=000000" alt="Admin"
+                        class="admin-avatar">
                 </div>
             </div>
         </header>
@@ -532,313 +531,319 @@
                 <p id="current-date">Thursday 11 September, 2025</p>
             </div>
         </div>
-        
-        <!-- Analytics Dashboard -->
         <div class="analytics-dashboard">
-            <!-- Stats Cards -->
             <div class="stats-cards">
                 <div class="stat-card primary">
-                    <div class="stat-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
                     <div class="stat-details">
                         <h3>Total Complaints</h3>
-                        <p class="stat-value">1,253</p>
-                        <p class="stat-change positive">+12.5% <i class="fas fa-arrow-up"></i></p>
+                        <p class="stat-value" id="stat-total">0</p>
                     </div>
                 </div>
                 <div class="stat-card success">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="stat-details">
                         <h3>Resolved Issues</h3>
-                        <p class="stat-value">876</p>
-                        <p class="stat-change positive">+8.3% <i class="fas fa-arrow-up"></i></p>
+                        <p class="stat-value" id="stat-resolved">0</p>
                     </div>
                 </div>
                 <div class="stat-card warning">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
                     <div class="stat-details">
                         <h3>Pending Issues</h3>
-                        <p class="stat-value">284</p>
-                        <p class="stat-change negative">+5.7% <i class="fas fa-arrow-up"></i></p>
+                        <p class="stat-value" id="stat-pending">0</p>
                     </div>
                 </div>
                 <div class="stat-card danger">
-                    <div class="stat-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
+                    <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
                     <div class="stat-details">
-                        <h3>Critical Issues</h3>
-                        <p class="stat-value">93</p>
-                        <p class="stat-change negative">+2.4% <i class="fas fa-arrow-up"></i></p>
+                        <h3>Avg. Resolution Time</h3>
+                        <p class="stat-value" id="stat-avg-time">0h</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Row 1 -->
             <div class="charts-row">
                 <div class="chart-container large">
                     <div class="chart-header">
                         <h3>Complaint Trends</h3>
-                        <div class="chart-actions">
-                            <select id="trend-timeframe">
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
-                        </div>
                     </div>
-                    <div class="chart-body">
-                        <canvas id="complaintsChart"></canvas>
-                    </div>
+                    <div class="chart-body"><canvas id="complaintsChart"></canvas></div>
                 </div>
                 <div class="chart-container medium">
                     <div class="chart-header">
                         <h3>Complaint Categories</h3>
                     </div>
-                    <div class="chart-body">
-                        <canvas id="categoriesChart"></canvas>
-                    </div>
+                    <div class="chart-body"><canvas id="categoriesChart"></canvas></div>
                 </div>
             </div>
-
-            <!-- Charts Row 2 -->
             <div class="charts-row">
                 <div class="chart-container medium">
                     <div class="chart-header">
                         <h3>Resolution Rate</h3>
                     </div>
-                    <div class="chart-body">
-                        <canvas id="resolutionChart"></canvas>
-                    </div>
+                    <div class="chart-body"><canvas id="resolutionChart"></canvas></div>
                 </div>
                 <div class="chart-container medium">
                     <div class="chart-header">
-                        <h3>District-wise Distribution</h3>
+                        <h3>District Distribution</h3>
                     </div>
-                    <div class="chart-body">
-                        <canvas id="districtChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activities Section -->
-            <div class="recent-activities">
-                <div class="section-header">
-                    <h3>Recent Activities</h3>
-                    <a href="#" class="view-all">View All</a>
-                </div>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon resolved">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="activity-details">
-                            <p class="activity-title">Complaint #1234 resolved</p>
-                            <p class="activity-meta">Water supply issue in Ranchi, resolved by Dept. of Water Resources</p>
-                            <p class="activity-time">2 hours ago</p>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon new">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <div class="activity-details">
-                            <p class="activity-title">New complaint registered</p>
-                            <p class="activity-meta">Road pothole in Jamshedpur, assigned to Municipal Corporation</p>
-                            <p class="activity-time">4 hours ago</p>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon escalated">
-                            <i class="fas fa-arrow-up"></i>
-                        </div>
-                        <div class="activity-details">
-                            <p class="activity-title">Complaint #986 escalated</p>
-                            <p class="activity-meta">Electricity outage in Bokaro, escalated to senior officials</p>
-                            <p class="activity-time">Yesterday</p>
-                        </div>
-                    </div>
+                    <div class="chart-body"><canvas id="districtChart"></canvas></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="../../js/api-client.js"></script>
     <script>
-        // Function to set the current date in the header
-        function setCurrentDate() {
-            const dateElement = document.getElementById('current-date');
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            dateElement.textContent = today.toLocaleDateString('en-US', options);
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- CHART INSTANCES ---
+            let complaintsChart, categoriesChart, resolutionChart, districtChart;
 
-        // Initialize charts when the page loads
-        window.onload = function() {
-            setCurrentDate();
+            // --- DOM ELEMENTS ---
+            const statTotalEl = document.getElementById('stat-total');
+            const statResolvedEl = document.getElementById('stat-resolved');
+            const statPendingEl = document.getElementById('stat-pending');
+            const statAvgTimeEl = document.getElementById('stat-avg-time');
+            const logoutLink = document.querySelector('.logout');
+
+            // --- DATA FETCHING ---
+            async function loadAnalyticsData() {
+                try {
+                    const response = await window.analyticsAPI.getDashboardData();
+                    if (response.success && response.data) {
+                        updateUI(response.data);
+                    }
+                } catch (error) {
+                    console.error("Failed to load analytics data:", error);
+                    // You can add an error message to the UI here
+                }
+            }
+
+            // --- UI UPDATES ---
+            function updateUI(data) {
+                // Calculate pending count
+                const pendingCount = data.reportCount - data.resolvedCount;
+
+                // Update stat cards
+                statTotalEl.textContent = data.reportCount;
+                statResolvedEl.textContent = data.resolvedCount;
+                statPendingEl.textContent = pendingCount;
+                statAvgTimeEl.textContent = `${data.avgResolutionTime.toFixed(1)}h`;
+
+                // Update the resolution chart with live data
+                updateResolutionChart(data.resolvedCount, pendingCount);
+            }
+
+            function updateResolutionChart(resolved, pending) {
+                const resolutionRate = (resolved + pending > 0) ? ((resolved / (resolved + pending)) * 100).toFixed(0) : 0;
+
+                resolutionChart.data.datasets[0].data = [resolved, pending];
+
+                // Custom plugin to update the center text
+                resolutionChart.options.plugins.centerText.text = `${resolutionRate}%`;
+
+                resolutionChart.update();
+            }
+
+            function logout() {
+                try {
+                    // Clear all authentication data from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('refreshToken');
+
+                    // Clear all session storage
+                    sessionStorage.clear();
+
+                    // Clear any cached data
+                    allComplaints = [];
+
+                    // Clear any cookies (if using httpOnly cookies)
+                    document.cookie.split(";").forEach(function (c) {
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    });
+
+                    console.log('User logged out successfully - all data cleared');
+
+                    // Redirect to index page
+                    window.location.href = '../../index.html';
+
+                } catch (error) {
+                    console.error('Logout error:', error);
+
+                    // Even if there's an error, clear local data and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    console.log('Forced logout due to error - all data cleared');
+                    window.location.href = '../../index.html';
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Set up logout button
+            if (logoutLink) {
+                logoutLink.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    try {
+                        await window.authAPI.logout();
+                        window.location.href = '../../index.html';
+                    } catch (error) {
+                        console.error('Logout failed:', error);
+                    }
+                });
+            }
+
+            // Logout button - Fixed and improved
+            function initializeLogoutButtons() {
+                // Find all possible logout elements
+                const logoutButtons = document.querySelectorAll('.logout, .logout-btn, [data-action="logout"]');
+                const logoutLinks = document.querySelectorAll('a[href*="logout"], a.logout');
+
+                // Attach logout to all logout buttons
+                logoutButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Attach logout to all logout links
+                logoutLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Add keyboard shortcut for logout (Ctrl+Alt+L)
+                document.addEventListener('keydown', function (e) {
+                    if (e.ctrlKey && e.altKey && e.key === 'l') {
+                        e.preventDefault();
+                        logout();
+                    }
+                });
+
+                console.log(`Logout functionality attached to ${logoutButtons.length + logoutLinks.length} elements`);
+            }
+
+            // Auto-logout on token expiration
+            function checkTokenExpiration() {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    console.log('No token found, redirecting to login');
+                    window.location.href = '../../index.html';
+                    return;
+                }
+
+                try {
+                    // Decode JWT token to check expiration
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Math.floor(Date.now() / 1000);
+
+                    if (payload.exp && payload.exp < currentTime) {
+                        console.log('Token expired, auto-logging out');
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = '../../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error checking token expiration:', error);
+                    // If token is malformed, clear it and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '../../index.html';
+                }
+            }
+
+            // Initialize logout functionality
+            initializeLogoutButtons();
+
+            // Check token expiration immediately
+            checkTokenExpiration();
+
+            // Check token expiration every 5 minutes
+            setInterval(checkTokenExpiration, 60 * 60 * 1000);
+
+            // --- CHART INITIALIZATION ---
+            function initializeCharts() {
+                // Hardcoded data for charts without an API endpoint
+                const trendData = [65, 78, 90, 81, 95, 110, 123, 142, 155, 160, 148, 138];
+                const categoryData = [30, 22, 18, 15, 10, 5];
+                const districtData = [352, 271, 184, 163, 120];
+
+                // Complaint Trends (Line Chart) - Placeholder
+                const complaintsCtx = document.getElementById('complaintsChart').getContext('2d');
+                complaintsChart = new Chart(complaintsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        datasets: [{ label: 'New Complaints', data: trendData, borderColor: '#4e73df', tension: 0.3, fill: true, backgroundColor: 'rgba(78, 115, 223, 0.05)' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                // Categories (Doughnut Chart) - Placeholder
+                const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+                categoriesChart = new Chart(categoriesCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Water Supply', 'Roads', 'Electricity', 'Sanitation', 'Transport', 'Others'],
+                        datasets: [{ data: categoryData, backgroundColor: ['#4e73df', '#1cc88a', '#f6c23e', '#e74a3b', '#36b9cc', '#858796'] }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+
+                // Resolution Rate (Gauge/Doughnut Chart) - DYNAMIC
+                const resolutionCtx = document.getElementById('resolutionChart').getContext('2d');
+                resolutionChart = new Chart(resolutionCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Resolved', 'Pending'],
+                        datasets: [{ data: [0, 100], backgroundColor: ['#1cc88a', '#f0f2f5'], borderWidth: 0, cutout: '80%' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, centerText: { text: '0%' } }
+                    },
+                    plugins: [{
+                        id: 'centerText',
+                        beforeDraw: (chart) => {
+                            const { ctx, width, height } = chart;
+                            const text = chart.options.plugins.centerText.text;
+                            ctx.restore();
+                            ctx.font = `bold ${(height / 5).toFixed(0)}px sans-serif`;
+                            ctx.textBaseline = 'middle';
+                            ctx.fillStyle = '#5a5c69';
+                            const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                            const textY = height / 2;
+                            ctx.fillText(text, textX, textY);
+                            ctx.save();
+                        }
+                    }]
+                });
+
+                // District Chart (Bar Chart) - Placeholder
+                const districtCtx = document.getElementById('districtChart').getContext('2d');
+                districtChart = new Chart(districtCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Hazaribagh'],
+                        datasets: [{ label: 'Total Complaints', data: districtData, backgroundColor: 'rgba(78, 115, 223, 0.8)', borderRadius: 5 }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            }
+
+            // --- INITIALIZATION ---
             initializeCharts();
-        };
-
-        function initializeCharts() {
-            // Complaints Trend Chart (Line Chart)
-            const complaintsCtx = document.getElementById('complaintsChart').getContext('2d');
-            const complaintsChart = new Chart(complaintsCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'New Complaints',
-                        data: [65, 78, 90, 81, 95, 110, 123, 142, 155, 160, 148, 138],
-                        borderColor: '#4e73df',
-                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                        tension: 0.3,
-                        fill: true
-                    }, {
-                        label: 'Resolved Complaints',
-                        data: [45, 55, 65, 70, 80, 95, 110, 125, 135, 140, 130, 125],
-                        borderColor: '#1cc88a',
-                        backgroundColor: 'rgba(28, 200, 138, 0.05)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Categories Pie Chart
-            const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
-            const categoriesChart = new Chart(categoriesCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Water Supply', 'Roads', 'Electricity', 'Sanitation', 'Public Transport', 'Others'],
-                    datasets: [{
-                        data: [30, 22, 18, 15, 10, 5],
-                        backgroundColor: [
-                            '#4e73df', 
-                            '#1cc88a', 
-                            '#f6c23e', 
-                            '#e74a3b', 
-                            '#36b9cc',
-                            '#858796'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                        }
-                    }
-                }
-            });
-
-            // Resolution Rate Chart (Gauge Chart using Doughnut)
-            const resolutionCtx = document.getElementById('resolutionChart').getContext('2d');
-            const resolutionChart = new Chart(resolutionCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Resolved', 'Pending'],
-                    datasets: [{
-                        data: [70, 30],
-                        backgroundColor: [
-                            '#1cc88a',
-                            '#f8f9fc'
-                        ],
-                        borderWidth: 0,
-                        cutout: '80%'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            enabled: true
-                        }
-                    }
-                },
-                plugins: [{
-                    id: 'centerText',
-                    beforeDraw: function(chart) {
-                        const width = chart.width;
-                        const height = chart.height;
-                        const ctx = chart.ctx;
-                        
-                        ctx.restore();
-                        const fontSize = (height / 150).toFixed(2);
-                        ctx.font = fontSize + 'em sans-serif';
-                        ctx.textBaseline = 'middle';
-                        
-                        const text = '70%';
-                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
-                        const textY = height / 2;
-                        
-                        ctx.fillStyle = '#2e3a4f';
-                        ctx.fillText(text, textX, textY);
-                        ctx.save();
-                    }
-                }]
-            });
-
-            // District Chart (Bar Chart)
-            const districtCtx = document.getElementById('districtChart').getContext('2d');
-            const districtChart = new Chart(districtCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Hazaribagh'],
-                    datasets: [{
-                        label: 'Total Complaints',
-                        data: [352, 271, 184, 163, 120],
-                        backgroundColor: [
-                            'rgba(78, 115, 223, 0.8)',
-                            'rgba(78, 115, 223, 0.7)',
-                            'rgba(78, 115, 223, 0.6)',
-                            'rgba(78, 115, 223, 0.5)',
-                            'rgba(78, 115, 223, 0.4)'
-                        ],
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
+            loadAnalyticsData();
+        });
     </script>
 </body>
 

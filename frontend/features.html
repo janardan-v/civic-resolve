@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
     <style>
         .features-hero {
             height: 40vh;
@@ -23,32 +26,32 @@
             text-align: center;
             margin-top: 125px;
         }
-        
+
         .features-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
         }
-        
+
         .features-hero p {
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
         }
-        
+
         .features-container {
             max-width: 1200px;
             margin: 60px auto;
             padding: 0 20px;
         }
-        
+
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
         }
-        
+
         .feature-tile {
             background-color: #ffffff;
             border-radius: 15px;
@@ -58,46 +61,46 @@
             cursor: pointer;
             position: relative;
         }
-        
+
         .feature-tile:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
-        
+
         .feature-img {
             height: 200px;
             overflow: hidden;
             position: relative;
         }
-        
+
         .feature-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
-        
+
         .feature-tile:hover .feature-img img {
             transform: scale(1.1);
         }
-        
+
         .feature-content {
             padding: 25px;
         }
-        
+
         .feature-content h2 {
             color: #333;
             margin-top: 0;
             margin-bottom: 15px;
             font-size: 1.5rem;
         }
-        
+
         .feature-content p {
             color: #666;
             margin-bottom: 20px;
             line-height: 1.6;
         }
-        
+
         .feature-icon {
             position: absolute;
             top: 15px;
@@ -111,48 +114,74 @@
             font-size: 24px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .police-icon {
             background-color: #0d1b4c;
             color: white;
         }
-        
+
         .hospital-icon {
             background-color: #1a2980;
             color: white;
         }
-        
+
         .ev-icon {
             background-color: #2e7d32;
             color: white;
         }
-        
+
         /* Dark Theme Overrides */
         body.dark-theme .feature-tile {
             background-color: #1a2b47;
         }
-        
+
         body.dark-theme .feature-content h2 {
             color: white;
         }
-        
+
         body.dark-theme .feature-content p {
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
+        /* By default (light theme), links and icons are black */
+        .support-social a {
+            color: black;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .support-social a i {
+            color: blue;
+        }
+        .support-social a:hover {
+            color: #555;
+            /* Optional: A slightly lighter black for hover effect */
+        }
+
+
+        /* When the body has the 'dark-theme' class, change the link color to white */
+        body.dark-theme .support-social a {
+            color: white;
+        }
+
+        body.dark-theme .support-social a:hover {
+            color: #ccc;
+            /* Optional: A slightly darker white for hover effect */
+        }
+
         @media (max-width: 768px) {
             .features-hero h1 {
                 font-size: 2rem;
             }
-            
+
             .features-hero p {
                 font-size: 1rem;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .feature-tile {
                 max-width: 400px;
                 margin: 0 auto;
@@ -160,6 +189,7 @@
         }
     </style>
 </head>
+
 <body>
     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
         <i class="bi bi-moon-stars-fill"></i>
@@ -168,14 +198,16 @@
         <div class="info-bar">
             <div class="contact-info">
                 <span class="mail"><i class="bi bi-envelope-fill"></i> &nbsp; info@everythingcivic.com</span>
-                <span class="phone"><i class="bi bi-telephone-fill"></i> &nbsp;Technical Inquiry : +91 99797 70904</span>
+                <span class="phone"><i class="bi bi-telephone-fill"></i> &nbsp;Technical Inquiry : +91 99797
+                    70904</span>
             </div>
 
             <div class="support-social">
-                <a href="#" class="dark-theme-text" style="color: black; text-decoration: none;">Help and support</a> &nbsp; | &nbsp;
-                <a href="#"><i class="bi bi-facebook dark-theme-text" style="color: black;"></i></a> &nbsp; | &nbsp;
-                <a href="#"><i class="bi bi-x-circle dark-theme-text" style="color: black;"></i></a> &nbsp; | &nbsp;
-                <a href="#"><i class="bi bi-linkedin dark-theme-text" style="color: black;"></i></a> &nbsp; | &nbsp;
+                <a href="#">Help and support</a>
+                &nbsp; | &nbsp;
+                <a href="#"><i class="bi bi-facebook"></i></a> &nbsp; | &nbsp;
+                <a href="#"><i class="bi bi-x-circle"></i></a> &nbsp; | &nbsp;
+                <a href="#"><i class="bi bi-linkedin"></i></a> &nbsp; | &nbsp;
             </div>
         </div>
 
@@ -198,7 +230,8 @@
     <section class="features-hero">
         <div>
             <h1>Our Features</h1>
-            <p>Explore the services and features that Civic Resolve offers to help citizens and government work together for a better community.</p>
+            <p>Explore the services and features that Civic Resolve offers to help citizens and government work together
+                for a better community.</p>
         </div>
     </section>
 
@@ -215,7 +248,8 @@
                     </div>
                     <div class="feature-content">
                         <h2>Police Stations</h2>
-                        <p>Find nearby police stations with directions, contact information, and emergency services to ensure your safety and security.</p>
+                        <p>Find nearby police stations with directions, contact information, and emergency services to
+                            ensure your safety and security.</p>
                     </div>
                 </div>
             </a>
@@ -224,14 +258,16 @@
             <a href="features/features-hospital.html" target="_blank" style="text-decoration: none;">
                 <div class="feature-tile">
                     <div class="feature-img">
-                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Hospital">
+                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                            alt="Hospital">
                         <div class="feature-icon hospital-icon">
                             <i class="bi bi-hospital"></i>
                         </div>
                     </div>
                     <div class="feature-content">
                         <h2>Hospitals</h2>
-                        <p>Locate hospitals and healthcare facilities near you for emergency care, medical services, and health support.</p>
+                        <p>Locate hospitals and healthcare facilities near you for emergency care, medical services, and
+                            health support.</p>
                     </div>
                 </div>
             </a>
@@ -247,7 +283,8 @@
                     </div>
                     <div class="feature-content">
                         <h2>EV Charging Stations</h2>
-                        <p>Find electric vehicle charging stations around the city to keep your green transportation powered and ready to go.</p>
+                        <p>Find electric vehicle charging stations around the city to keep your green transportation
+                            powered and ready to go.</p>
                     </div>
                 </div>
             </a>
@@ -284,4 +321,5 @@
     <!-- JavaScript Code -->
     <script src="script.js"></script>
 </body>
+
 </html>

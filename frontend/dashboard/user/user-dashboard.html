@@ -12,67 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    
-    <!-- Include API client script -->
-    <script src="../../js/api-client.js"></script>
-    
-    <!-- Auth protection script -->
-    <script>
-        // Check if user is authenticated
-        function isAuthenticated() {
-            return localStorage.getItem('token') !== null;
-        }
-        
-        // Logout function
-        function logout() {
-            // Clear authentication data
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            
-            // Redirect to home page
-            window.location.href = '../../index.html';
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // If not authenticated, redirect to login
-            if (!isAuthenticated()) {
-                window.location.href = '../../login.html';
-                return;
-            }
-            
-            // Get user data
-            try {
-                const userJson = localStorage.getItem('user');
-                let user = {};
-                
-                if (userJson && userJson !== 'undefined') {
-                    user = JSON.parse(userJson);
-                }
-                
-                // If user is admin, redirect to admin dashboard
-                if (user.role === 'admin' || user.role === 'super_admin' || user.role === 'department_admin') {
-                    window.location.href = '../admin/admin-dashboard.html';
-                    return;
-                }
-                
-            } catch (error) {
-                console.error('Error parsing user data:', error);
-                // Clear corrupted data and redirect to login
-                localStorage.removeItem('user');
-                localStorage.removeItem('token');
-                window.location.href = '../../login.html';
-            }
-            
-            // Set up logout button in the sidebar
-            const logoutLink = document.querySelector('.sidebar-nav a.logout');
-            if (logoutLink) {
-                logoutLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    logout();
-                });
-            }
-        });
-    </script>
+
 </head>
 
 <body>
@@ -83,7 +23,7 @@
                 <img src="../../Images/logo.png" alt="Civic Resolve Logo" class="sidebar-logo">
                 <h3>Civic Resolve</h3>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <ul>
                     <li class="active">
@@ -99,10 +39,10 @@
                         <a href="near-me.html"><i class="bi bi-geo-alt"></i> Near Me</a>
                     </li>
                     <li>
-                        <a href="#"><i class="bi bi-bell"></i> Notifications</a>
+                        <a href="notifications.html"><i class="bi bi-bell"></i> Notifications</a>
                     </li>
                     <li>
-                        <a href="#"><i class="bi bi-gear"></i> Settings</a>
+                        <a href="settings.html"><i class="bi bi-gear"></i> Settings</a>
                     </li>
                     <li class="separator"></li>
                     <li>
@@ -110,7 +50,7 @@
                     </li>
                 </ul>
             </nav>
-            
+
             <div class="sidebar-footer">
                 <p>&copy; 2025 Civic Resolve</p>
             </div>
@@ -124,15 +64,15 @@
                     <i class="bi bi-search"></i>
                     <input type="text" placeholder="Search...">
                 </div>
-                
+
                 <div class="user-menu">
                     <button class="notifications">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
-                    
+
                     <div class="user-profile">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
                         <div class="user-info">
                             <h4>Rahul Sharma</h4>
                             <p>Citizen</p>
@@ -167,7 +107,7 @@
                         <p><i class="bi bi-arrow-up"></i> 2 this month</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="card-icon green">
                         <i class="bi bi-check-circle"></i>
@@ -180,7 +120,7 @@
                         <p><i class="bi bi-arrow-up"></i> 1 this week</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="card-icon orange">
                         <i class="bi bi-hourglass-split"></i>
@@ -193,7 +133,7 @@
                         <p>Avg. Resolve: <br> 4 days</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card">
                     <div class="card-icon purple">
                         <i class="bi bi-star"></i>
@@ -211,11 +151,12 @@
             <!-- Recent Complaints and Activity Sections -->
             <div class="dashboard-grid">
                 <!-- Recent Complaints -->
-                <section class="recent-complaints">
+                <section class="recent-complaints"
+                    style="max-height: 383px; overflow-y: auto;scrollbar-width: thin; scrollbar-color: transparent transparent;">
                     <div class="section-header">
                         <h2>Recent Complaints</h2>
                     </div>
-                    
+
                     <div class="complaints-list">
                         <div class="complaint-item">
                             <div class="complaint-status resolved">
@@ -225,7 +166,7 @@
                                 <h3>Streetlight Not Working</h3>
                                 <p>Sector 5, Road No. 3, Near Park</p>
                                 <div class="complaint-meta">
-                                    <span><i class="bi bi-calendar3"></i> 15 Aug 2023</span>
+                                    <span><i class="bi bi-calendar3"></i> 15 Aug 2025</span>
                                     <span><i class="bi bi-tag"></i> Infrastructure</span>
                                 </div>
                             </div>
@@ -233,7 +174,7 @@
                                 <button class="view-btn">View</button>
                             </div>
                         </div>
-                        
+
                         <div class="complaint-item">
                             <div class="complaint-status in-progress">
                                 <i class="bi bi-hourglass-split"></i>
@@ -242,7 +183,7 @@
                                 <h3>Water Leakage Issue</h3>
                                 <p>Block C, Main Street, Near Market</p>
                                 <div class="complaint-meta">
-                                    <span><i class="bi bi-calendar3"></i> 10 Sep 2023</span>
+                                    <span><i class="bi bi-calendar3"></i> 10 Sep 2025</span>
                                     <span><i class="bi bi-tag"></i> Water Supply</span>
                                 </div>
                             </div>
@@ -250,7 +191,7 @@
                                 <button class="view-btn">View</button>
                             </div>
                         </div>
-                        
+
                         <div class="complaint-item">
                             <div class="complaint-status in-progress">
                                 <i class="bi bi-hourglass-split"></i>
@@ -259,7 +200,7 @@
                                 <h3>Garbage Not Collected</h3>
                                 <p>Sector 8, Residential Area</p>
                                 <div class="complaint-meta">
-                                    <span><i class="bi bi-calendar3"></i> 22 Sep 2023</span>
+                                    <span><i class="bi bi-calendar3"></i> 22 Sep 2025</span>
                                     <span><i class="bi bi-tag"></i> Sanitation</span>
                                 </div>
                             </div>
@@ -269,13 +210,14 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Activity Timeline -->
-                <section class="activity-timeline">
+                <section class="activity-timeline"
+                    style="max-height: 383px; overflow-y: auto;scrollbar-width: thin; scrollbar-color: transparent transparent;">
                     <div class="section-header">
                         <h2>Recent Activity</h2>
                     </div>
-                    
+
                     <div class="timeline">
                         <div class="timeline-item">
                             <div class="timeline-icon blue">
@@ -287,7 +229,7 @@
                                 <span class="timeline-time">Today, 10:30 AM</span>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item">
                             <div class="timeline-icon green">
                                 <i class="bi bi-chat-text"></i>
@@ -298,7 +240,7 @@
                                 <span class="timeline-time">Yesterday, 3:45 PM</span>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item">
                             <div class="timeline-icon orange">
                                 <i class="bi bi-gear"></i>
@@ -306,10 +248,10 @@
                             <div class="timeline-content">
                                 <h3>Status Updated</h3>
                                 <p>Garbage collection complaint status changed to "In Progress".</p>
-                                <span class="timeline-time">22 Sep 2023, 9:15 AM</span>
+                                <span class="timeline-time">22 Sep 2025, 9:15 AM</span>
                             </div>
                         </div>
-                        
+
                         <div class="timeline-item">
                             <div class="timeline-icon purple">
                                 <i class="bi bi-file-earmark-plus"></i>
@@ -317,7 +259,7 @@
                             <div class="timeline-content">
                                 <h3>New Complaint Filed</h3>
                                 <p>You filed a new complaint about garbage collection.</p>
-                                <span class="timeline-time">22 Sep 2023, 8:30 AM</span>
+                                <span class="timeline-time">22 Sep 2025, 8:30 AM</span>
                             </div>
                         </div>
                     </div>
@@ -331,7 +273,7 @@
                     <div class="section-header">
                         <h2>Upcoming Maintenance in Your Area</h2>
                     </div>
-                    
+
                     <div class="maintenance-list">
                         <div class="maintenance-item">
                             <div class="maintenance-icon">
@@ -340,10 +282,11 @@
                             <div class="maintenance-details">
                                 <h3>Water Supply Interruption</h3>
                                 <p>Scheduled maintenance of water supply lines in Sector 5</p>
-                                <p class="maintenance-date"><i class="bi bi-calendar3"></i> 25 Sep 2023, 10:00 AM - 2:00 PM</p>
+                                <p class="maintenance-date"><i class="bi bi-calendar3"></i> 25 Sep 2025, 10:00 AM - 2:00
+                                    PM</p>
                             </div>
                         </div>
-                        
+
                         <div class="maintenance-item">
                             <div class="maintenance-icon">
                                 <i class="bi bi-lightning"></i>
@@ -351,28 +294,29 @@
                             <div class="maintenance-details">
                                 <h3>Electricity Outage</h3>
                                 <p>Scheduled maintenance of electrical equipment in Block C</p>
-                                <p class="maintenance-date"><i class="bi bi-calendar3"></i> 28 Sep 2023, 9:00 AM - 12:00 PM</p>
+                                <p class="maintenance-date"><i class="bi bi-calendar3"></i> 28 Sep 2025, 9:00 AM - 12:00
+                                    PM</p>
                             </div>
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Quick Actions -->
                 <section class="quick-actions">
                     <div class="section-header">
                         <h2>Quick Actions</h2>
                     </div>
-                    
+
                     <div class="actions-grid">
                         <a href="new-complaint.html" class="action-card">
                             <i class="bi bi-plus-circle"></i>
                             <span>New Complaint</span>
                         </a>
-                        <a href="#" class="action-card">
+                        <a href="my-complaints.html" class="action-card">
                             <i class="bi bi-search"></i>
                             <span>Track Complaint</span>
                         </a>
-                        <a href="#" class="action-card">
+                        <a href="notifications.html" class="action-card">
                             <i class="bi bi-bell"></i>
                             <span>Notifications</span>
                         </a>
@@ -406,7 +350,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:100" class="emergency-card">
                     <div class="emergency-icon police">
                         <i class="bi bi-shield"></i>
@@ -419,7 +363,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:101" class="emergency-card">
                     <div class="emergency-icon fire">
                         <i class="bi bi-fire"></i>
@@ -432,7 +376,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:1091" class="emergency-card">
                     <div class="emergency-icon women">
                         <i class="bi bi-gender-female"></i>
@@ -445,7 +389,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:1098" class="emergency-card">
                     <div class="emergency-icon child">
                         <i class="bi bi-people"></i>
@@ -458,7 +402,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:1070" class="emergency-card">
                     <div class="emergency-icon disaster">
                         <i class="bi bi-cloud-lightning-rain"></i>
@@ -471,7 +415,7 @@
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                 </a>
-                
+
                 <a href="tel:112" class="emergency-card">
                     <div class="emergency-icon emergency">
                         <i class="bi bi-exclamation-triangle"></i>
@@ -488,134 +432,317 @@
         </div>
     </div>
 
+    <script src="../../js/api-client.js"></script>
     <script>
-        // Current date display
-        document.addEventListener('DOMContentLoaded', function() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            document.getElementById('current-date').textContent = today.toLocaleDateString('en-IN', options);
-            
-            // Mobile menu toggle
-            const sidebarToggle = document.createElement('button');
-            sidebarToggle.classList.add('sidebar-toggle');
-            sidebarToggle.innerHTML = '<i class="bi bi-list"></i>';
-            document.querySelector('.dashboard-header').prepend(sidebarToggle);
-            
-            sidebarToggle.addEventListener('click', function() {
-                document.querySelector('.dashboard-container').classList.toggle('sidebar-open');
-            });
-            
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // --- DOM ELEMENT SELECTION ---
+            const userProfileName = document.querySelector('.user-info h4');
+            const userProfileRole = document.querySelector('.user-info p');
+            const currentDateEl = document.getElementById('current-date');
+            const logoutLink = document.querySelector('.sidebar-nav a.logout');
+
+            // Stat card elements
+            const totalComplaintsEl = document.querySelector('.stat-card:nth-child(1) h3');
+            const resolvedComplaintsEl = document.querySelector('.stat-card:nth-child(2) h3');
+            const inProgressComplaintsEl = document.querySelector('.stat-card:nth-child(3) h3');
+
+            // Dynamic content containers
+            const recentComplaintsList = document.querySelector('.recent-complaints .complaints-list');
+            const activityTimeline = document.querySelector('.activity-timeline .timeline');
+
+            // --- INITIALIZATION ---
+
+            // Main function to load all dynamic data for the page
+            async function initializeDashboard() {
+                updateDateTime();
+
+                try {
+                    // Fetch current user and their reports in parallel for speed
+                    const [userResponse, reportsResponse] = await Promise.all([
+                        window.authAPI.getCurrentUser(),
+                        window.reportsAPI.getMyReports()
+                    ]);
+
+                    // Update header with user data
+                    if (userResponse.success && userResponse.data) {
+                        updateHeaderUI(userResponse.data);
+                    }
+
+                    // Update dashboard with report data
+                    if (reportsResponse.success && reportsResponse.data) {
+                        const complaints = reportsResponse.data;
+                        updateStatCards(complaints);
+                        renderRecentComplaints(complaints);
+                        renderActivityTimeline(complaints);
+                    } else {
+                        // Handle case where there are no complaints
+                        updateStatCards([]);
+                        renderRecentComplaints([]);
+                        renderActivityTimeline([]);
+                    }
+
+                } catch (error) {
+                    console.error("Failed to initialize dashboard:", error);
+                    // The api-client will automatically redirect to login on authentication failure.
+                    // You could show an error message for other types of failures here.
+                }
+            }
+
+            // --- UI UPDATE FUNCTIONS ---
+
+            function updateHeaderUI(user) {
+                if (userProfileName) userProfileName.textContent = user.name || 'User';
+                if (userProfileRole) userProfileRole.textContent = user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Citizen';
+            }
+
+            function updateDateTime() {
+                if (currentDateEl) {
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    currentDateEl.textContent = now.toLocaleDateString('en-IN', options);
+                }
+            }
+
+            function updateStatCards(complaints) {
+                const total = complaints.length;
+                const resolved = complaints.filter(c => c.status === 'resolved').length;
+                const inProgress = complaints.filter(c => c.status === 'in_progress').length;
+
+                if (totalComplaintsEl) totalComplaintsEl.textContent = total;
+                if (resolvedComplaintsEl) resolvedComplaintsEl.textContent = resolved;
+                if (inProgressComplaintsEl) inProgressComplaintsEl.textContent = inProgress;
+            }
+
+            function renderRecentComplaints(complaints) {
+                if (!recentComplaintsList) return;
+                recentComplaintsList.innerHTML = ''; // Clear hardcoded content
+
+                // Get the 3 most recent complaints
+                const recent = complaints
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (recent.length === 0) {
+                    recentComplaintsList.innerHTML = '<p>No recent complaints to display.</p>';
+                    return;
+                }
+
+                recent.forEach(complaint => {
+                    const statusConfig = {
+                        resolved: { class: 'resolved', icon: 'bi-check-circle' },
+                        in_progress: { class: 'in-progress', icon: 'bi-hourglass-split' },
+                        pending: { class: 'pending', icon: 'bi-clock' }
+                    };
+                    const config = statusConfig[complaint.status] || statusConfig.pending;
+                    const formattedDate = new Date(complaint.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                    const itemHTML = `
+                <div class="complaint-item">
+                    <div class="complaint-status ${config.class}">
+                        <i class="bi ${config.icon}"></i>
+                    </div>
+                    <div class="complaint-details">
+                        <h3>${complaint.title}</h3>
+                        <p>${complaint.categoryId.name || 'Uncategorized'}</p>
+                        <div class="complaint-meta">
+                            <span><i class="bi bi-calendar3"></i> ${formattedDate}</span>
+                        </div>
+                    </div>
+                    <div class="complaint-actions">
+                        <a href="my-complaints.html" class="view-btn">View</a>
+                    </div>
+                </div>`;
+                    recentComplaintsList.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+
+            function renderActivityTimeline(complaints) {
+                if (!activityTimeline) return;
+                activityTimeline.innerHTML = ''; // Clear hardcoded content
+
+                const recent = complaints
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (recent.length === 0) {
+                    activityTimeline.innerHTML = '<p>No recent activity.</p>';
+                    return;
+                }
+
+                recent.forEach(complaint => {
+                    const timeAgo = new Date(complaint.createdAt).toLocaleDateString();
+                    const itemHTML = `
+                <div class="timeline-item">
+                    <div class="timeline-icon purple">
+                        <i class="bi bi-file-earmark-plus"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>New Complaint Filed</h3>
+                        <p>You filed a new complaint: "${complaint.title}"</p>
+                        <span class="timeline-time">${timeAgo}</span>
+                    </div>
+                </div>`;
+                    activityTimeline.insertAdjacentHTML('beforeend', itemHTML);
+                });
+            }
+
+            // Complete logout function
+            function logout() {
+                try {
+                    // Clear all authentication data from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('refreshToken');
+
+                    // Clear all session storage
+                    sessionStorage.clear();
+
+                    // Clear any cached data
+                    allComplaints = [];
+
+                    // Clear any cookies (if using httpOnly cookies)
+                    document.cookie.split(";").forEach(function (c) {
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    });
+
+                    console.log('User logged out successfully - all data cleared');
+
+                    // Redirect to index page
+                    window.location.href = '../../index.html';
+
+                } catch (error) {
+                    console.error('Logout error:', error);
+
+                    // Even if there's an error, clear local data and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    console.log('Forced logout due to error - all data cleared');
+                    window.location.href = '../../index.html';
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // Set up logout button
+            if (logoutLink) {
+                logoutLink.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    try {
+                        await window.authAPI.logout();
+                        window.location.href = '../../index.html';
+                    } catch (error) {
+                        console.error('Logout failed:', error);
+                    }
+                });
+            }
+
+            // Logout button - Fixed and improved
+            function initializeLogoutButtons() {
+                // Find all possible logout elements
+                const logoutButtons = document.querySelectorAll('.logout, .logout-btn, [data-action="logout"]');
+                const logoutLinks = document.querySelectorAll('a[href*="logout"], a.logout');
+
+                // Attach logout to all logout buttons
+                logoutButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Attach logout to all logout links
+                logoutLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Add keyboard shortcut for logout (Ctrl+Alt+L)
+                document.addEventListener('keydown', function (e) {
+                    if (e.ctrlKey && e.altKey && e.key === 'l') {
+                        e.preventDefault();
+                        logout();
+                    }
+                });
+
+                console.log(`Logout functionality attached to ${logoutButtons.length + logoutLinks.length} elements`);
+            }
+
+            // Auto-logout on token expiration
+            function checkTokenExpiration() {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    console.log('No token found, redirecting to login');
+                    window.location.href = '../../index.html';
+                    return;
+                }
+
+                try {
+                    // Decode JWT token to check expiration
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Math.floor(Date.now() / 1000);
+
+                    if (payload.exp && payload.exp < currentTime) {
+                        console.log('Token expired, auto-logging out');
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = '../../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error checking token expiration:', error);
+                    // If token is malformed, clear it and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '../../index.html';
+                }
+            }
+
+            // Initialize logout functionality
+            initializeLogoutButtons();
+
+            // Check token expiration immediately
+            checkTokenExpiration();
+
+            // Check token expiration every 5 minutes
+            setInterval(checkTokenExpiration, 60 * 60 * 1000);
+
             // Emergency contacts overlay functionality
             const emergencyOverlay = document.getElementById('emergency-overlay');
             const emergencyButton = document.querySelector('.action-card:nth-child(4)');
             const closeEmergency = document.getElementById('close-emergency');
-            
-            emergencyButton.addEventListener('click', function(e) {
+
+            emergencyButton.addEventListener('click', function (e) {
                 e.preventDefault();
                 emergencyOverlay.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
             });
-            
-            closeEmergency.addEventListener('click', function() {
+
+            closeEmergency.addEventListener('click', function () {
                 emergencyOverlay.style.display = 'none';
                 document.body.style.overflow = 'auto';
             });
-            
+
             // Close overlay when clicking outside the container
-            emergencyOverlay.addEventListener('click', function(e) {
+            emergencyOverlay.addEventListener('click', function (e) {
                 if (e.target === emergencyOverlay) {
                     emergencyOverlay.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
             });
-            
+
             // Escape key to close overlay
-            document.addEventListener('keydown', function(e) {
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && emergencyOverlay.style.display === 'flex') {
                     emergencyOverlay.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
             });
-            
-            // Handle logout buttons
-            document.querySelectorAll('.logout').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    logout();
-                });
-            });
-        });
-    </script>
-</body>
 
-</html>
-                        <h3>Emergency Helpline</h3>
-                        <p class="phone-number">112</p>
-                    </div>
-                    <div class="call-icon">
-                        <i class="bi bi-telephone-fill"></i>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Current date display
-        document.addEventListener('DOMContentLoaded', function() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            document.getElementById('current-date').textContent = today.toLocaleDateString('en-IN', options);
-            
-            // Mobile menu toggle
-            const sidebarToggle = document.createElement('button');
-            sidebarToggle.classList.add('sidebar-toggle');
-            sidebarToggle.innerHTML = '<i class="bi bi-list"></i>';
-            document.querySelector('.dashboard-header').prepend(sidebarToggle);
-            
-            sidebarToggle.addEventListener('click', function() {
-                document.querySelector('.dashboard-container').classList.toggle('sidebar-open');
-            });
-            
-            // Emergency contacts overlay functionality
-            const emergencyOverlay = document.getElementById('emergency-overlay');
-            const emergencyButton = document.querySelector('.action-card:nth-child(4)');
-            const closeEmergency = document.getElementById('close-emergency');
-            
-            emergencyButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                emergencyOverlay.style.display = 'flex';
-                document.body.style.overflow = 'hidden'; // Prevent scrolling behind overlay
-            });
-            
-            closeEmergency.addEventListener('click', function() {
-                emergencyOverlay.style.display = 'none';
-                document.body.style.overflow = 'auto'; // Re-enable scrolling
-            });
-            
-            // Close overlay when clicking outside the container
-            emergencyOverlay.addEventListener('click', function(e) {
-                if (e.target === emergencyOverlay) {
-                    emergencyOverlay.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-            
-            // Escape key to close overlay
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && emergencyOverlay.style.display === 'flex') {
-                    emergencyOverlay.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-            
-            // Also handle logout for any other logout buttons
-            document.querySelectorAll('.logout').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    logout();
-                });
-            });
+            // --- INITIALIZE THE PAGE ---
+            initializeDashboard();
         });
     </script>
 </body>
