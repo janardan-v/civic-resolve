@@ -127,6 +127,7 @@
                 align-items: center;
             }
         }
+
         /* ======================================= */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -243,6 +244,7 @@
         </div>
     </div>
 
+    <script src="../../js/api-client.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- Create and append the user profile HTML structure ---
@@ -312,12 +314,11 @@
                     emailInput.value = userData.email || '';
                     phoneInput.value = userData.phoneNumber || ''; // Populate with phone number
                     userIdInput.value = userData.userId || '';
+                    roleInput.value = userData.role || 'Admin';
                     if (userData.avatarUrl) {
                         avatarImg.src = userData.avatarUrl;
                     }
                 }
-
-                roleInput.value = userData.role || 'Admin';
             }
 
             // --- Asynchronous function to fetch and display the user profile ---
@@ -331,28 +332,18 @@
                 }
 
                 try {
-                    const response = await fetch('http://localhost:5000/api/v1/users/current-user', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            console.error('Session expired. Redirecting to login.');
-                            localStorage.removeItem('token');
-                            window.location.href = '../../index.html';
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
+                    const result = await window.authAPI.getCurrentUser();
 
                     if (result.success && result.data) {
                         updateProfileDisplay(result.data);
                     } else {
                         console.error('API response was not successful:', result.message);
+
+                        if (result.statusCode === 401) {
+                            console.error('Session expired. Redirecting to login.');
+                            localStorage.removeItem('token');
+                            window.location.href = '../../index.html';
+                        }
                         updateProfileDisplay(null);
                     }
                 } catch (error) {
