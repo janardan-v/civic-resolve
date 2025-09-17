@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Civic Resolve</title>
+    <link rel="stylesheet" href="../../style/user-style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Add this to your user-style.css */
+
+        .user-profile-card {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-card-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            margin-right: 1.5rem;
+        }
+
+        #profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .change-avatar-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            transition: background-color 0.2s;
+        }
+
+        .change-avatar-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #profile-name-header {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .role-badge {
+            background-color: #e7f3ff;
+            color: #007bff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .profile-card-body .form-row {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .profile-card-body .form-group {
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .profile-card-body label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-card-body input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            /* Disabled look */
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .profile-card-body input:disabled {
+            cursor: not-allowed;
+            color: #6c757d;
+        }
+
+        .profile-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            margin-top: 1rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="../../Images/logo.png" alt="Civic Resolve Logo" class="sidebar-logo">
+                <h3>Civic Resolve</h3>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="new-complaint.html"><i class="bi bi-plus-circle"></i> New Complaint</a>
+                    </li>
+                    <li>
+                        <a href="my-complaints.html"><i class="bi bi-list-check"></i> My Complaints</a>
+                    </li>
+                    <li>
+                        <a href="near-me.html"><i class="bi bi-geo-alt"></i> Near Me</a>
+                    </li>
+                    <li>
+                        <a href="notifications.html"><i class="bi bi-bell"></i> Notifications</a>
+                    </li>
+                    <li class="active">
+                        <a href="#"><i class="bi bi-gear"></i> Settings</a>
+                    </li>
+                    <li class="separator"></li>
+                    <li>
+                        <a href="../../index.html" class="logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>&copy; 2025 Civic Resolve</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header with user info and search -->
+            <header class="dashboard-header">
+                <div class="search-container">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <div class="user-menu">
+                    <button class="notifications">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+
+                    <div class="user-profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <div class="user-info">
+                            <h4>Rahul Sharma</h4>
+                            <p>Citizen</p>
+                        </div>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-text">
+                    <h1>User Profile</h1>
+                </div>
+                <div class="date-time">
+                    <p id="current-date">Loading date...</p>
+                </div>
+            </section>
+
+            <section class="user-profile-card">
+                <div class="profile-card-header">
+                    <div class="profile-avatar-container">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Avatar" id="profile-avatar">
+                        <button class="change-avatar-btn" title="Change Avatar">
+                            <i class="bi bi-camera-fill"></i>
+                        </button>
+                    </div>
+                    <div class="profile-header-info">
+                        <h2 id="profile-name-header">Loading...</h2>
+                        <p id="profile-role" class="role-badge">Loading...</p>
+                    </div>
+                </div>
+
+                <div class="profile-card-body">
+                    <form id="profile-details-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-name">Full Name</label>
+                                <input type="text" id="profile-name" value="Loading..." disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-username">Username</label>
+                                <input type="text" id="profile-username" value="Loading..." disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-email">Email Address</label>
+                                <input type="email" id="profile-email" value="Loading..." disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-phone">Phone Number</label>
+                                <input type="text" id="profile-phone" value="Loading..." disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-userid">User ID</label>
+                            <input type="text" id="profile-userid" value="Loading..." disabled>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="../../js/api-client.js"></script>
+    <script>
+        // --- Date display (from your original code) ---
+        const dateElement = document.getElementById('current-date');
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = new Date().toLocaleDateString('en-US', options);
+
+        // --- NEW: User Profile Logic ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Select elements to populate
+            const nameHeader = document.getElementById('profile-name-header');
+            const roleBadge = document.getElementById('profile-role');
+            const nameInput = document.getElementById('profile-name');
+            const usernameInput = document.getElementById('profile-username');
+            const emailInput = document.getElementById('profile-email');
+            const phoneInput = document.getElementById('profile-phone');
+            const userIdInput = document.getElementById('profile-userid');
+
+            // Function to fetch and display the user profile
+            async function loadUserProfile() {
+                try {
+                    // 1. Use the pre-built getCurrentUser method from the authAPI
+                    const result = await authAPI.getCurrentUser();
+
+                    if (!result.success) {
+                        // Handle auth errors (e.g., expired token)
+                        if (result.statusCode === 401) {
+                            alert('Your session has expired. Please log in again.');
+                            localStorage.removeItem('token'); // Clear bad token
+                            window.location.href = '../../index.html'; // Adjust this path if needed
+                            return;
+                        }
+                        throw new Error(result.message || 'Failed to get user data.');
+                    }
+
+                    // 2. Populate the HTML with the fetched data
+                    const user = result.data;
+                    nameHeader.textContent = user.name;
+                    roleBadge.textContent = user.role;
+                    nameInput.value = user.name;
+                    usernameInput.value = user.username;
+                    emailInput.value = user.email;
+                    phoneInput.value = user.phoneNumber || 'N/A';
+                    userIdInput.value = user.userId;
+
+                } catch (error) {
+                    console.error("Error loading user profile:", error);
+                    // Display an error message on the page
+                    document.querySelector('.user-profile-card').innerHTML =
+                        `<p style="color: red; text-align: center;">Could not load profile data. Please try again later.</p>`;
+                }
+            }
+
+            // Call the function to load the profile when the page loads
+            loadUserProfile();
+        });
+    </script>
+</body>
+
+</html>

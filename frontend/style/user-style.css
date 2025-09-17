@@ -512,6 +512,7 @@ body {
     font-weight: 500;
     transition: var(--transition);
     font-size: 0.85rem;
+    text-decoration: none;
 }
 
 .complaint-actions .view-btn:hover {
