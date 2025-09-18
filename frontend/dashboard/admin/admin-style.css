@@ -244,8 +244,8 @@ header {
 }
 
 .stat-icon.document {
-    background-color: rgba(78, 115, 223, 0.1);
-    color: var(--primary-color);
+    background-color: rgba(223, 78, 78, 0.1);
+    color: var(--danger-color);
 }
 
 .stat-icon.resolved {

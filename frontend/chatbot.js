@@ -31,7 +31,7 @@ function getBotReply(message) {
         return { text: "🚑 108 (Medical)\n👮 100 (Police)\n🔥 101 (Fire)\n👩 1091 (Women's Helpline)" };
     } 
     else if (message.includes("contact")) {
-        return { text: "You can contact us at 📧 info@everythingcivic.com or ☎️ +91 99797 70904." };
+        return { text: "You can contact us at\n 📧 info@everythingcivic.com \n☎️ +91 99797 70904." };
     } 
     else {
         return { text: "I didn’t understand that. Please choose an option below." };

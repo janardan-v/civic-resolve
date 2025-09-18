@@ -58,6 +58,46 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- UI & CHART UPDATES ---
+    function capitalizeFirstLetter(string) {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    async function updateStatsWithCalculations() {
+        const totalComplaintsThisMonthElement = document.getElementById('total-complaints-this-month');
+        const resolvedThisWeekElement = document.getElementById('resolved-this-week');
+
+        try {
+            const response = await window.reportsAPI.getAllReports();
+            if (response.success && response.data) {
+                const allComplaints = response.data;
+
+                // --- Perform the Calculations ---
+
+                // Total Complaints
+                const totalComplaints = allComplaints.length;
+
+                // Complaints this month
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const newThisMonth = allComplaints.filter(c => new Date(c.createdAt) >= startOfMonth).length;
+
+                // Resolved this week
+                const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                const resolvedThisWeek = allComplaints.filter(c => c.status === 'resolved' && new Date(c.updatedAt) >= startOfWeek).length;
+
+                // --- Update the UI ---
+                totalComplaintsThisMonthElement.innerHTML = `<i class="fas fa-arrow-up"></i> ${newThisMonth} this month`;
+                resolvedThisWeekElement.innerHTML = `<i class="fas fa-arrow-up"></i> ${resolvedThisWeek} this week`;
+
+            } else {
+                console.error('Failed to fetch complaints:', response.message);
+            }
+        } catch (error) {
+            console.error('Error fetching or processing data:', error);
+        }
+    }
+
     function updateStatCards(analyticsData) {
         // 1. Select the container and individual cards for clarity.
         const statCardsContainer = document.querySelector('.stats-cards');
@@ -99,6 +139,8 @@ document.addEventListener('DOMContentLoaded', function () {
             pendingCard.querySelector('h2').textContent = stats.pending;
             pendingCard.querySelector('small').textContent = `Avg. Resolve: ${stats.avgResolution} days`;
         }
+
+        updateStatsWithCalculations();
     }
 
     function updateCharts(data) {
@@ -151,7 +193,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         issuesToShow.forEach(issue => {
             const tr = document.createElement('tr');
-            const statusBadge = `<span class="status-badge status-${issue.status.replace('_', '-')}">${issue.status.replace('_', ' ')}</span>`;
+            const capitalizedStatus = capitalizeFirstLetter(issue.status.replace('_', ' '));
+            const statusBadge = `<span class="status-badge status-${issue.status.replace('_', '-')}">${capitalizedStatus}</span>`;
             const priorityBadge = `<span class="priority-badge priority-${issue.priority}" title="${issue.priority}"></span>`;
             const actionButtons = `
                 <div class="action-buttons">
@@ -162,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${issue.reportId.substring(0, 12)}...</td>
                 <td>${issue.title}</td>
                 <td>${issue.userId?.name || 'N/A'}</td>
-                <td>${issue.categoryId?.name || 'N/A'}</td>
+                <td>${capitalizeFirstLetter(issue.categoryId?.name) || 'N/A'}</td>
                 <td>${new Date(issue.createdAt).toLocaleDateString('en-IN')}</td>
                 <td>${statusBadge}</td>
                 <td>${priorityBadge}</td>
@@ -233,6 +276,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateAudioInModal(issue) {
+        const audioGallery = document.getElementById('audio-gallery');
+        if (!audioGallery) return;
+
+        if (issue.voice_recording_url) {
+            audioGallery.innerHTML = `
+            <audio id="detail-audio" controls>
+                <source src="${issue.voice_recording_url}" type="audio/webm">
+                Your browser does not support the audio element.
+            </audio>
+        `;
+        } else {
+            audioGallery.innerHTML = `<p>No audio description provided.</p>`;
+        }
+    }
+
     function openIssueDetailModal(issueId) {
         const issue = allComplaints.find(c => c.reportId === issueId);
         if (!issue) return;
@@ -244,6 +303,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('detail-date').textContent = new Date(issue.createdAt).toLocaleString('en-IN');
         document.getElementById('detail-description').textContent = issue.description;
         document.getElementById('detail-image').src = issue.photo_url || 'https://via.placeholder.com/400x200?text=No+Image';
+
+        document.getElementById('issue-status').textContent = capitalizeFirstLetter(issue.status.replace('_', ' '));
+        document.getElementById('issue-priority').textContent = capitalizeFirstLetter(issue.priority);
+        document.getElementById('issue-department').textContent = capitalizeFirstLetter(issue.categoryId?.name) || 'N/A';
+
+        updateAudioInModal(issue);
 
         // --- New Map Logic ---
         const lat = issue.location_lat;

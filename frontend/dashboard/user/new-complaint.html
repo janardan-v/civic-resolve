@@ -638,7 +638,7 @@
             border-radius: var(--border-radius);
         }
 
-        #location-map{
+        #location-map {
             height: 300px;
             width: 100%;
         }
@@ -684,8 +684,15 @@
 
         .detail-item strong {
             display: inline-block;
-            width: 100px;
+            width: 140px;
             color: var(--text-primary);
+        }
+
+        .description {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
         }
 
         .review-coords {
@@ -823,7 +830,7 @@
             font-weight: 600;
         }
 
-        .success-content > p {
+        .success-content>p {
             color: var(--text-secondary);
             margin-bottom: 25px;
             font-size: 1rem;
@@ -963,6 +970,75 @@
                 font-size: 1.3rem;
             }
         }
+
+        .audio-upload-group {
+            margin-bottom: 20px;
+        }
+
+        .audio-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            margin: 25px;
+            text-align: center;
+        }
+
+        .audio-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .audio-controls button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #007bff;
+            transition: background-color 0.2s ease;
+        }
+
+        .audio-controls button:hover {
+            background-color: #0056b3;
+        }
+
+        .audio-controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #recording-status {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .audio-file-input {
+            display: none;
+            /* Hide the default file input button */
+        }
+
+        .file-upload-option span {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            color: #333;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        #audio-playback {
+            width: 100%;
+            margin-top: 15px;
+            display: none;
+            /* Hidden by default */
+        }
     </style>
 </head>
 
@@ -995,7 +1071,7 @@
                             <a href="notifications.html"><i class="bi bi-bell"></i> Notifications</a>
                         </li>
                         <li>
-                            <a href="#"><i class="bi bi-gear"></i> Settings</a>
+                            <a href="settings.html"><i class="bi bi-gear"></i> Settings</a>
                         </li>
                         <li class="separator"></li>
                         <li>
@@ -1019,16 +1095,17 @@
                     </div>
 
                     <div class="user-menu">
-                        <button class="notifications">
+                        <button class="notifications" id="notification-link">
                             <i class="bi bi-bell"></i>
                             <span class="badge">3</span>
                         </button>
 
                         <div class="user-profile">
-                            <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                            <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                                alt="User Profile">
                             <div class="user-info">
-                                <h4>Rahul Sharma</h4>
-                                <p>Citizen</p>
+                                <h4 id="user-name">Loading ...</h4>
+                                <p id="user-role">Loading ...</p>
                             </div>
                             <i class="bi bi-chevron-down"></i>
                         </div>
@@ -1143,14 +1220,39 @@
 
                             <div class="description-area">
                                 <h3>Additional Details</h3>
-                                <textarea id="description-input"
-                                    placeholder="Please provide  any additional details..."
+                                <textarea id="description-input" placeholder="Please provide  any additional details..."
                                     rows="6"></textarea>
                                 <div class="character-count">
                                     <span id="char-count">0</span>/500 characters
                                 </div>
                             </div>
 
+                            <div class="audio-description">
+                                <label for="audio-input">
+                                    <h3>Add an Audio Description (Optional)</h3>
+                                </label>
+                                <div class="audio-container">
+                                    <div>
+                                        <div class="audio-controls">
+                                            <button type="button" id="record-btn" class="bi bi-mic-fill">
+                                                Record</button>
+                                            <button type="button" id="stop-btn" class="bi bi-stop-fill" disabled>
+                                                Stop</button>
+                                            <button type="button" id="remove-audio-btn" class="bi bi-trash-fill"
+                                                style="display: none; background-color: var(--danger-color);">
+                                                Remove</button>
+
+                                        </div>
+                                        <p id="recording-status">Click record to start.</p>
+                                    </div>
+                                    <div class="file-upload-option" id="file-upload-option">
+                                        <input type="file" id="audio-input" name="voiceRecording" accept="audio/*"
+                                            class="audio-file-input">
+                                        <span>Or select an audio file to upload.</span>
+                                    </div>
+                                </div>
+                                <audio id="audio-playback" controls></audio>
+                            </div>
                             <div class="step-actions">
                                 <button type="button" class="btn-prev" id="prev-2">Previous</button>
                                 <button type="button" class="btn-next" id="next-2" disabled>Next Step</button>
@@ -1167,7 +1269,7 @@
                                     <i class="bi bi-geo-alt"></i>
                                     <input type="text" id="address-input" placeholder="Enter address or landmark">
                                     <button type="button" id="detect-location" class="detect-btn">
-                                        <i class="bi bi-crosshair" style="color: white;"></i> Detect Location
+                                        <i class="bi bi-crosshair" style="color: white;"></i> Search Location
                                     </button>
                                 </div>
 
@@ -1214,11 +1316,19 @@
                                     <div class="review-details">
                                         <div class="detail-item">
                                             <strong>Category:</strong>
-                                            <span id="review-category">Not selected</span>
+                                            <p id="review-category">Not selected</p>
                                         </div>
                                         <div class="detail-item">
                                             <strong>Description:</strong>
                                             <p id="review-description">No description provided</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <strong>Audio-Description</strong>
+                                            <div id="review-audio-container" style="display: none;">
+                                                <audio id="review-audio-playback" controls></audio>
+                                                <p class="review-status-text" id="review-audio-status"></p>
+                                            </div>
+                                            <p id="no-audio-text" style="margin-left: 20px">No audio description provided.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1236,7 +1346,8 @@
 
                             <div class="step-actions">
                                 <button type="button" class="btn-prev" id="prev-4">Previous</button>
-                                <button type="button" class="btn-submit" id="submit-complaint">Submit Complaint</button>
+                                <button type="button" class="btn-submit" id="submit-complaint">Submit
+                                    Complaint</button>
                             </div>
                         </div>
                     </div>
@@ -1314,18 +1425,10 @@
             });
 
             // 3. CORE FUNCTION TO UPDATE MAP AND UI
-            /**
-             * This function is the heart of the logic. It does three things:
-             * A) Moves the map's view to the new coordinates.
-             * B) Places (or moves) a marker at that exact spot.
-             * C) Fetches the human-readable address and updates the UI text.
-             * @param {number} lat - The latitude.
-             * @param {number} lng - The longitude.
-             * @param {number} zoomLevel - How closely to zoom in on the location.
-             */
             function updateMarkerAndLocation(lat, lng, zoomLevel) {
                 // A. Center the map on the new latitude and longitude with the specified zoom.
                 map.setView([lat, lng], zoomLevel);
+                map.invalidateSize(); // Fixes map display issues in hidden containers
 
                 // B. If a marker already exists, move it. Otherwise, create a new draggable marker.
                 if (marker) {
@@ -1390,6 +1493,13 @@
                 const { lat, lng } = e.latlng;
                 updateMarkerAndLocation(lat, lng, map.getZoom());
             });
+
+            const notificationButton = document.getElementById('notification-link');
+
+            notificationButton.addEventListener('click', () => {
+                window.location.href = 'notifications.html';
+            });
         </script>
     </body>
+
 </html>

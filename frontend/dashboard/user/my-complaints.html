@@ -827,7 +827,7 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
@@ -835,8 +835,8 @@
                     <div class="user-profile">
                         <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -857,19 +857,19 @@
 
             <!-- Stats Overview -->
             <section class="stats-container">
-                <div class="stat-card">
+                <div class="stat-card" style="border-left: var(--danger-color) 8px solid;">
                     <span class="stat-number" id="stat-total">0</span>
                     <span class="stat-label">Total Complaints</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="border-left: var(--warning-color) 8px solid;">
                     <span class="stat-number" id="stat-pending">0</span>
                     <span class="stat-label">Pending</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="border-left: var(--secondary-color) 8px solid;">
                     <span class="stat-number" id="stat-inProgress">0</span>
                     <span class="stat-label">In Progress</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" style="border-left: var(--success-color) 8px solid;">
                     <span class="stat-number" id="stat-resolved">0</span>
                     <span class="stat-label">Resolved</span>
                 </div>

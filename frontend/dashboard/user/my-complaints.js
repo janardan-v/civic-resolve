@@ -62,11 +62,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- UI RENDERING & UPDATES ---
+    // Function to capitalize the first letter of the role
+    function capitalize(roleString) {
+        if (typeof roleString !== 'string' || roleString.length === 0) {
+            return '';
+        }
+        return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+    }
 
     // Updates the header with user's name and role
     function updateHeaderUI(user) {
         if (userProfileName) userProfileName.textContent = user.name || 'User';
-        if (userProfileRole) userProfileRole.textContent = user.role || 'Citizen';
+        if (userProfileRole) userProfileRole.textContent = capitalize(user.role) || 'Citizen';
         // You might want to add a profile picture URL to your user model
         // if (userProfileImage && user.profileImageUrl) userProfileImage.src = user.profileImageUrl;
     }
@@ -142,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h3 class="complaint-title">${complaint.title || 'Untitled Complaint'}</h3>
                     <p class="complaint-description">${truncateText(complaint.description, 120)}</p>
                     <div class="complaint-meta">
-                        <div class="meta-item"><i class="bi bi-tag"></i><span>${categoryDisplayName}</span></div>
+                        <div class="meta-item"><i class="bi bi-tag"></i><span>${capitalize(categoryDisplayName)}</span></div>
                         <div class="meta-item"><i class="bi bi-geo-alt"></i><span>Lat: ${complaint.location_lat?.toFixed(4) || 'N/A'}, Lng: ${complaint.location_lng?.toFixed(4) || 'N/A'}</span></div>
                         <div class="meta-item"><i class="bi bi-clock"></i><span>Updated: ${updatedDate}</span></div>
                     </div>
@@ -212,6 +219,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showLoading(show) { if (loadingSpinner) loadingSpinner.style.display = show ? 'block' : 'none'; }
     function showError(message) { if (errorMessage) { errorMessage.textContent = message; errorMessage.style.display = message ? 'block' : 'none'; } }
+
+    const notificationButton = document.getElementById('notification-link');
+
+    notificationButton.addEventListener('click', () => {
+        window.location.href = 'notifications.html';
+    });
 
     // Logout function
     function initializeLogoutButtons() {

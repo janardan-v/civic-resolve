@@ -159,6 +159,53 @@ document.addEventListener('DOMContentLoaded', function () {
         return Math.floor(seconds) + " seconds ago";
     }
 
+    // Function to capitalize the first letter of the role
+    function capitalize(roleString) {
+        if (typeof roleString !== 'string' || roleString.length === 0) {
+            return '';
+        }
+        return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+    }
+
+    async function updateProfileHeader() {
+        const userNameElement = document.getElementById('user-name');
+        const userRoleElement = document.getElementById('user-role');
+
+        // Initial check for element existence
+        if (!userNameElement || !userRoleElement) {
+            console.error('User profile elements not found in the DOM.');
+            return;
+        }
+
+        try {
+            // Call the getCurrentUser API method
+            const response = await window.authAPI.getCurrentUser();
+
+            // Check if the API call was successful
+            if (response.success && response.data) {
+                const userData = response.data;
+
+                // Update the text content of the HTML elements
+                userNameElement.textContent = userData.name || userData.username || 'User';
+                userRoleElement.textContent = capitalize(userData.role) || 'Unknown Role';
+
+            } else {
+                // Handle unsuccessful response
+                console.error('Failed to fetch user data:', response.message);
+                userNameElement.textContent = 'Guest';
+                userRoleElement.textContent = '';
+            }
+        } catch (error) {
+            // Handle network or other errors
+            console.error('Error fetching user profile:', error);
+            userNameElement.textContent = 'Guest';
+            userRoleElement.textContent = '';
+        }
+    }
+
+    // Call the function on page load
+    updateProfileHeader();
+    
     // Logout function
     function initializeLogoutButtons() {
         // Find all possible logout elements

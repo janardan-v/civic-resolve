@@ -345,7 +345,7 @@ body {
 }
 
 .card-icon.blue {
-    background-color: var(--info-color);
+    background-color: var(--danger-color);
 }
 
 .card-icon.green {

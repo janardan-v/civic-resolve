@@ -15,6 +15,53 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     setCurrentDate();
 
+    // Function to capitalize the first letter of the role
+    function capitalize(roleString) {
+        if (typeof roleString !== 'string' || roleString.length === 0) {
+            return '';
+        }
+        return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+    }
+
+    async function updateProfileHeader() {
+        const userNameElement = document.getElementById('user-name');
+        const userRoleElement = document.getElementById('user-role');
+
+        // Initial check for element existence
+        if (!userNameElement || !userRoleElement) {
+            console.error('User profile elements not found in the DOM.');
+            return;
+        }
+
+        try {
+            // Call the getCurrentUser API method
+            const response = await window.authAPI.getCurrentUser();
+
+            // Check if the API call was successful
+            if (response.success && response.data) {
+                const userData = response.data;
+
+                // Update the text content of the HTML elements
+                userNameElement.textContent = userData.name || userData.username || 'User';
+                userRoleElement.textContent = capitalize(userData.role) || 'Unknown Role';
+
+            } else {
+                // Handle unsuccessful response
+                console.error('Failed to fetch user data:', response.message);
+                userNameElement.textContent = 'Guest';
+                userRoleElement.textContent = '';
+            }
+        } catch (error) {
+            // Handle network or other errors
+            console.error('Error fetching user profile:', error);
+            userNameElement.textContent = 'Guest';
+            userRoleElement.textContent = '';
+        }
+    }
+
+    // Call the function on page load
+    updateProfileHeader();
+
     // Prevent default form submissions
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function (e) {
@@ -79,6 +126,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     let overlayJustOpened = false;
     let overlayOpenTime = 0;
     let overlayClickEnabled = false;
+
+    const recordBtn = document.getElementById('record-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const audioInput = document.getElementById('audio-input');
+    const audioPlayback = document.getElementById('audio-playback');
+    const recordingStatus = document.getElementById('recording-status');
+    const removeAudioBtn = document.getElementById('remove-audio-btn');
+    const uploadAudioBtn = document.getElementById('file-upload-option');
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordedAudioFile = null;
 
     // Load categories from backend
     async function loadCategories() {
@@ -326,6 +385,78 @@ document.addEventListener('DOMContentLoaded', async function () {
             checkStep2Completion();
         });
     }
+    // Handle the recording process
+    recordBtn.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                recordedAudioFile = new File([audioBlob], 'voice-recording.webm', { type: 'audio/webm' });
+                audioPlayback.src = URL.createObjectURL(audioBlob);
+                audioPlayback.style.display = 'block';
+                recordingStatus.textContent = "Recording saved.";
+                audioInput.disabled = true;
+                removeAudioBtn.style.display = 'inline-block'; // Show remove button
+            };
+
+            mediaRecorder.start();
+            recordBtn.disabled = true;
+            stopBtn.disabled = false;
+            audioInput.disabled = true;
+            recordingStatus.textContent = "Recording...";
+        } catch (err) {
+            console.error('Error accessing microphone:', err);
+            alert('Could not access your microphone. Please check permissions.');
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        recordBtn.disabled = false;
+        stopBtn.disabled = true;
+    });
+
+    uploadAudioBtn.addEventListener('click', () => {
+        // Programmatically click the hidden file input
+        audioInput.click();
+    });
+
+    // Handle a file upload
+    audioInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('audio/')) {
+            recordedAudioFile = file;
+            audioPlayback.src = URL.createObjectURL(file);
+            audioPlayback.style.display = 'block';
+            recordBtn.disabled = true;
+            recordingStatus.textContent = `File selected: ${file.name}`;
+            removeAudioBtn.style.display = 'inline-block'; // Show remove button
+        } else {
+            alert('Please select a valid audio file.');
+            recordedAudioFile = null;
+            audioPlayback.src = '';
+        }
+    });
+
+    // New: Handle audio removal
+    removeAudioBtn.addEventListener('click', () => {
+        recordedAudioFile = null;
+        audioPlayback.src = '';
+        audioPlayback.style.display = 'none';
+        audioInput.value = null;
+        recordBtn.disabled = false;
+        audioInput.disabled = false;
+        recordingStatus.textContent = "Click record or upload to begin.";
+        removeAudioBtn.style.display = 'none';
+    });
 
     function checkStep2Completion() {
         const nextBtn = document.getElementById('next-2');
@@ -406,6 +537,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     });
 
+    const reviewAudioContainer = document.getElementById('review-audio-container');
+    const reviewAudioPlayback = document.getElementById('review-audio-playback');
+    const noAudioText = document.getElementById('no-audio-text');
+
     function updateReviewSection() {
         // Update photo review
         const reviewPhoto = document.getElementById('review-photo');
@@ -426,6 +561,25 @@ document.addEventListener('DOMContentLoaded', async function () {
         const reviewDescription = document.getElementById('review-description');
         if (reviewDescription && descriptionInput) {
             reviewDescription.textContent = descriptionInput.value.trim() || 'No description provided';
+        }
+
+        // Update audio review
+        if (recordedAudioFile) {
+            reviewAudioPlayback.src = URL.createObjectURL(recordedAudioFile);
+
+            reviewAudioContainer.style.display = 'block';
+            noAudioText.style.display = 'none';
+
+            const reviewAudioStatus = document.getElementById('review-audio-status');
+            if (reviewAudioStatus) {
+                reviewAudioStatus.textContent = `File: ${recordedAudioFile.name}`;
+            }
+
+        } else {
+            // Hide the audio container and show the "no audio" text
+            reviewAudioContainer.style.display = 'none';
+            noAudioText.style.display = 'block';
+
         }
 
         // Update location review
@@ -483,8 +637,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                 formData.append('locationLng', currentLocation.lng);
                 formData.append('photo', photoFile);
 
-                if (voiceInput && voiceInput.files[0]) {
-                    formData.append('voiceRecording', voiceInput.files[0]);
+                if (recordedAudioFile) {
+                    // The name 'voiceRecording' must match what your backend expects
+                    formData.append('voiceRecording', recordedAudioFile);
                 }
 
                 // Make the API call

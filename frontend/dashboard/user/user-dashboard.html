@@ -66,16 +66,17 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
 
                     <div class="user-profile">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -621,6 +622,12 @@
             }
 
             // --- EVENT LISTENERS ---
+
+            const notificationButton = document.getElementById('notification-link');
+
+            notificationButton.addEventListener('click', () => {
+                window.location.href = 'notifications.html';
+            });
 
             // Set up logout button
             if (logoutLink) {

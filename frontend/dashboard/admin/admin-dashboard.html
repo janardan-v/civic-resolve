@@ -84,7 +84,7 @@
                 <div class="stat-details">
                     <h2>245</h2>
                     <p>Total Complaints</p>
-                    <small><i class="fas fa-arrow-up"></i> 15 this month</small>
+                    <small id="total-complaints-this-month"><i class="fas fa-arrow-up"></i> 15 this month</small>
                 </div>
             </div>
             <div class="stat-card">
@@ -94,7 +94,7 @@
                 <div class="stat-details">
                     <h2>187</h2>
                     <p>Resolved</p>
-                    <small><i class="fas fa-arrow-up"></i> 8 this week</small>
+                    <small id="resolved-this-week"><i class="fas fa-arrow-up"></i> 8 this week</small>
                 </div>
             </div>
             <div class="stat-card">
@@ -166,7 +166,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Issue</th>
-                            <th>Location</th>
+                            <th>Reported By</th>
                             <th>Category</th>
                             <th>Reported On</th>
                             <th>Status</th>
@@ -237,33 +237,35 @@
                     <div class="image-gallery">
                         <img id="detail-image" src="#" alt="Issue photo">
                     </div>
+                    <h3>Audio Description</h3>
+                    <div id="audio-gallery">
+                    </div>
                 </div>
                 <div class="issue-details">
                     <div class="detail-row">
                         <span class="detail-label">Issue ID:</span>
-                        <span class="detail-value" id="detail-id">CR-2025-0042</span>
+                        <span class="detail-value" id="detail-id">Loading...</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Issue Type:</span>
-                        <span class="detail-value" id="detail-type">Water Leakage</span>
+                        <span class="detail-value" id="detail-type">Loading...</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Location:</span>
-                        <span class="detail-value" id="detail-location">Block C, Main Street, Near Market</span>
+                        <span class="detail-value" id="detail-location">Loading...</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Reported By:</span>
-                        <span class="detail-value" id="detail-reporter">Rahul Sharma</span>
+                        <span class="detail-value" id="detail-reporter">Loading...</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Reported On:</span>
-                        <span class="detail-value" id="detail-date">10 Sep 2025</span>
+                        <span class="detail-value" id="detail-date">Loading...</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Description:</span>
                         <p class="detail-description" id="detail-description">
-                            Water leakage from main pipe causing water accumulation on the street.
-                            The issue has been ongoing for 3 days and the water wastage is significant.
+                            Loading...
                         </p>
                     </div>
                 </div>
@@ -277,61 +279,18 @@
                     <div class="management-controls">
                         <div class="control-group">
                             <label for="issue-status">Status:</label>
-                            <select id="issue-status">
-                                <option value="new">New</option>
-                                <option value="in-progress" selected>In Progress</option>
-                                <option value="resolved">Resolved</option>
-                                <option value="pending">Pending</option>
-                            </select>
+                            <span id="issue-status" style="color: var(--status-color)">Loading...</span>
                         </div>
                         <div class="control-group">
                             <label for="issue-priority">Priority:</label>
-                            <select id="issue-priority">
-                                <option value="low">Low</option>
-                                <option value="medium" selected>Medium</option>
-                                <option value="high">High</option>
-                                <option value="critical">Critical</option>
-                            </select>
+                            <span id="issue-priority" style="color: var(--status-color)">Loading...</span>
                         </div>
                         <div class="control-group">
                             <label for="issue-department">Assign Department:</label>
-                            <select id="issue-department">
-                                <option value="water">Water Department</option>
-                                <option value="sanitation">Sanitation</option>
-                                <option value="roads">Roads & Infrastructure</option>
-                                <option value="electricity">Electricity</option>
-                            </select>
+                            <span id="issue-department" style="color: var(--status-color)">Loading...</span>
                         </div>
                     </div>
                 </div>
-                <div class="issue-comments">
-                    <h3>Internal Notes</h3>
-                    <div class="comments-list">
-                        <div class="comment">
-                            <div class="comment-avatar">
-                                <img src="../../Images/staff-avatar.png" alt="Staff">
-                            </div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <span class="comment-author">Water Department</span>
-                                    <span class="comment-time">Yesterday, 3:45 PM</span>
-                                </div>
-                                <p class="comment-text">
-                                    Team dispatched to investigate. Initial assessment suggests pipe replacement will be
-                                    needed.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="add-comment">
-                        <textarea placeholder="Add an internal note..."></textarea>
-                        <button class="post-comment">Add Note</button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="secondary-btn">Close Issue</button>
-                <button class="primary-btn">Save Changes</button>
             </div>
         </div>
     </div>

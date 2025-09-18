@@ -422,7 +422,7 @@
                     </li>
                     <li class="separator"></li>
                     <li>
-                        <a href= "../../index.html" class="logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                        <a href="../../index.html" class="logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -442,16 +442,17 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
 
                     <div class="user-profile">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -494,6 +495,7 @@
         </main>
     </div>
 
+    <script src="../../js/api-client.js"></script>
     <script>
         // Display current date in a readable format
         function setCurrentDate() {
@@ -510,6 +512,59 @@
 
             dateElement.textContent = now.toLocaleDateString('en-US', options);
         }
+
+        const notificationButton = document.getElementById('notification-link');
+
+        notificationButton.addEventListener('click', () => {
+            window.location.href = 'notifications.html';
+        });
+
+        // Function to capitalize the first letter of the role
+        function capitalize(roleString) {
+            if (typeof roleString !== 'string' || roleString.length === 0) {
+                return '';
+            }
+            return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+        }
+
+        async function updateProfileHeader() {
+            const userNameElement = document.getElementById('user-name');
+            const userRoleElement = document.getElementById('user-role');
+
+            // Initial check for element existence
+            if (!userNameElement || !userRoleElement) {
+                console.error('User profile elements not found in the DOM.');
+                return;
+            }
+
+            try {
+                // Call the getCurrentUser API method
+                const response = await window.authAPI.getCurrentUser();
+
+                // Check if the API call was successful
+                if (response.success && response.data) {
+                    const userData = response.data;
+
+                    // Update the text content of the HTML elements
+                    userNameElement.textContent = userData.name || userData.username || 'User';
+                    userRoleElement.textContent = capitalize(userData.role) || 'Unknown Role';
+
+                } else {
+                    // Handle unsuccessful response
+                    console.error('Failed to fetch user data:', response.message);
+                    userNameElement.textContent = 'Guest';
+                    userRoleElement.textContent = '';
+                }
+            } catch (error) {
+                // Handle network or other errors
+                console.error('Error fetching user profile:', error);
+                userNameElement.textContent = 'Guest';
+                userRoleElement.textContent = '';
+            }
+        }
+
+        // Call the function on page load
+        updateProfileHeader();
 
         // Function to handle the map switching
         function setupMapSwitching() {
@@ -555,7 +610,7 @@
         }
 
         // Add window.onload event handler to initialize functions
-        window.onload = function() {
+        window.onload = function () {
             setCurrentDate();
             setupMapSwitching();
         };
