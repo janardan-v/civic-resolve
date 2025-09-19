@@ -186,15 +186,15 @@
             <h2>Civic Resolve</h2>
         </div>
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item">
+            <a href="admin-dashboard.html" class="nav-item">
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
             <a href="complaints.html" class="nav-item">
                 <i class="fas fa-tasks"></i> Manage Complaints
             </a>
 
-            <a href="#" class="nav-item">
-                <i class="fas fa-building"></i> Departments
+            <a href="notifications.html" class="nav-item">
+                <i class="fas fa-bell"></i> Notifications
             </a>
             <a href="analytics.html" class="nav-item">
                 <i class="fas fa-chart-bar"></i> Analytics
@@ -294,6 +294,11 @@
                 welcomeSection.insertAdjacentHTML('afterend', profileHTML);
             }
 
+            function capitalize(string) {
+                if (!string) return '';
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
             // --- Function to update the profile with data ---
             function updateProfileDisplay(userData) {
                 const nameHeader = document.getElementById('profile-name-header');
@@ -308,13 +313,13 @@
 
                 if (userData) {
                     nameHeader.textContent = userData.name || userData.username;
-                    roleBadge.textContent = userData.role || 'Unknown Role';
+                    roleBadge.textContent = capitalize(userData.role.replace('_', ' ')) || 'Unknown Role';
                     nameInput.value = userData.name || '';
-                    usernameInput.value = userData.username || '';
+                    usernameInput.value = capitalize(userData.username) || '';
                     emailInput.value = userData.email || '';
                     phoneInput.value = userData.phoneNumber || ''; // Populate with phone number
                     userIdInput.value = userData.userId || '';
-                    roleInput.value = userData.role || 'Admin';
+                    roleInput.value = capitalize(userData.role.replace('_', ' ')) || 'Admin';
                     if (userData.avatarUrl) {
                         avatarImg.src = userData.avatarUrl;
                     }
@@ -365,6 +370,124 @@
             // Call the functions to load the profile and update the date when the page loads
             loadUserProfile();
             updateDateTime();
+
+            // Logout function
+            const logoutButton = document.querySelector('.logout');
+            function initializeLogoutButtons() {
+                // Find all possible logout elements
+                const logoutButtons = document.querySelectorAll('.logout, .logout-btn, [data-action="logout"]');
+                const logoutLinks = document.querySelectorAll('a[href*="logout"], a.logout');
+
+                // Attach logout to all logout buttons
+                logoutButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Attach logout to all logout links
+                logoutLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        logout();
+                    });
+                });
+
+                // Add keyboard shortcut for logout (Ctrl+Alt+L)
+                document.addEventListener('keydown', function (e) {
+                    if (e.ctrlKey && e.altKey && e.key === 'l') {
+                        e.preventDefault();
+                        logout();
+                    }
+                });
+
+                console.log(`Logout functionality attached to ${logoutButtons.length + logoutLinks.length} elements`);
+            }
+
+
+            // Auto-logout on token expiration
+            function checkTokenExpiration() {
+                const token = localStorage.getItem('token');
+
+                if (!token) {
+                    console.log('No token found, redirecting to login');
+                    window.location.href = '../../login.html';
+                    return;
+                }
+
+                try {
+                    // Decode JWT token to check expiration
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Math.floor(Date.now() / 1000);
+
+                    if (payload.exp && payload.exp < currentTime) {
+                        console.log('Token expired, auto-logging out');
+                        alert('Your session has expired. Please log in again.');
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        window.location.href = '../../login.html';
+                    }
+                } catch (error) {
+                    console.error('Error checking token expiration:', error);
+                    // If token is malformed, clear it and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '../../login.html';
+                }
+            }
+
+            // Initialize logout functionality
+            initializeLogoutButtons();
+
+            // Check token expiration immediately
+            checkTokenExpiration();
+
+            // Check token expiration every hour
+            setInterval(checkTokenExpiration, 60 * 60 * 1000);
+
+            console.log('Token expiration check initialized');
+
+            // Logout button
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    try {
+                        // Clear all authentication data from localStorage
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('refreshToken');
+
+                        // Clear all session storage
+                        sessionStorage.clear();
+
+                        // Clear any cached data
+                        allComplaints = [];
+
+                        // Clear any cookies (if using httpOnly cookies)
+                        document.cookie.split(";").forEach(function (c) {
+                            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                        });
+
+                        console.log('User logged out successfully - all data cleared');
+
+                        // Redirect to login page
+                        window.location.href = '../../index.html';
+
+                    } catch (error) {
+                        console.error('Logout error:', error);
+
+                        // Even if there's an error, clear local data and redirect
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        console.log('Forced logout due to error - all data cleared');
+                        alert('Logged out successfully');
+                        window.location.href = '../../login.html';
+                    }
+                });
+            }
         });
     </script>
 </body>
