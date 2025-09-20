@@ -153,6 +153,7 @@
         .support-social a i {
             color: blue;
         }
+
         .support-social a:hover {
             color: #555;
             /* Optional: A slightly lighter black for hover effect */
@@ -185,6 +186,214 @@
             .feature-tile {
                 max-width: 400px;
                 margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 450px) {
+
+            /* Base adjustments */
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                font-size: 14px;
+                overflow-x: hidden;
+            }
+
+            iframe {
+                width: 100% !important;
+            }
+
+            #datawrapper-chart-GiEPa {
+                height: 325px !important;
+            }
+
+            /* Mobile Navbar - Stacked Layout */
+            .navbar {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+                background-color: white;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Top row: Email & Phone + Login Button */
+            .info-bar {
+                display: none;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 15px;
+                background-color: #f8f9fa;
+                font-size: 11px;
+                border-bottom: 1px solid #eee;
+                height: 35px;
+            }
+
+            .contact-info {
+                display: flex;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .phone,
+            .mail {
+                margin: 0;
+                font-size: 11px;
+                color: #555;
+            }
+
+            .support-social {
+                display: none;
+                /* Hide social icons to save space */
+            }
+
+            .info-bar .login-btn {
+                padding: 4px 12px;
+                font-size: 10px;
+                border-radius: 15px;
+                margin: 0;
+                min-width: 50px;
+                height: 25px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .login-btn {
+                display: none !important;
+            }
+
+            /* Second row: Logo */
+            .logo-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 10px 15px;
+                background-color: white;
+                border-bottom: 1px solid #eee;
+                height: 60px;
+            }
+
+            .trapezoid-logo {
+                position: relative;
+                width: auto;
+                height: 93px;
+                background: none;
+                clip-path: none;
+                box-shadow: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .trapezoid-logo img {
+                width: 185px;
+                height: auto;
+                margin: 0;
+            }
+
+            /* Third row: Navigation */
+            .main-nav {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 0px;
+                background-color: white;
+                border-bottom: 1px solid #eee;
+                height: 55px;
+                /* padding-left: 15px; */
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-direction: row;
+                margin: 0;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .nav-links a {
+                margin: 0;
+                font-size: 11px;
+                border-bottom: none;
+                white-space: nowrap;
+                text-decoration: none;
+                color: #333;
+                border-radius: 15px;
+                transition: all 0.3s ease;
+            }
+
+            .nav-links a:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+                color: var(--primary-color);
+            }
+
+            /* Remove the second login button from nav-links */
+            .nav-links .login-btn {
+                display: none;
+            }
+
+            /* Hide some nav items on very small screens */
+            .nav-links a:nth-child(n+6) {
+                display: none;
+            }
+
+            /* Footer Mobile */
+            .footer {
+                padding: 30px 0 0;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                padding: 0 20px;
+                text-align: center;
+            }
+
+            .footer-section {
+                margin-bottom: 25px;
+                min-width: auto;
+            }
+
+            .footer-section h3 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .footer-section h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-section ul li {
+                margin-bottom: 8px;
+            }
+
+            .footer-section ul li a {
+                font-size: 14px;
+            }
+
+            .footer-section p {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .footer-bottom {
+                padding: 15px;
+                margin-top: 15px;
+            }
+
+            .footer-bottom p {
+                font-size: 13px;
+            }
+
+            /* Utility and component adjustments */
+            .theme-toggle {
+                bottom: 20px;
+                right: 20px;
             }
         }
     </style>
