@@ -456,11 +456,11 @@
     .main-content {
         padding: 20px 15px;
         overflow-x: hidden;
-        margin: 0;
+        margin: 0!important;
         /* Prevents horizontal scrolling from content overflow */
     }
 
     .stats-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr!important;
     }
 }
