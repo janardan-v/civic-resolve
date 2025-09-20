@@ -63,6 +63,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     async function updateStatsWithCalculations() {
         const totalComplaintsThisMonthElement = document.getElementById('total-complaints-this-month');
         const resolvedThisWeekElement = document.getElementById('resolved-this-week');

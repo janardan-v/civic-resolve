@@ -15,6 +15,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
     setCurrentDate();
 
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     // Function to capitalize the first letter of the role
     function capitalize(roleString) {
         if (typeof roleString !== 'string' || roleString.length === 0) {
@@ -585,11 +595,11 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Update location review
         const reviewCoords = document.getElementById('review-coords');
         const reviewAddress = document.getElementById('review-address');
-        
+
         if (reviewCoords && currentLocation.lat && currentLocation.lng) {
             reviewCoords.textContent = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
         }
-        
+
         if (reviewAddress && locationAddress) {
             reviewAddress.textContent = locationAddress.textContent || 'No address provided';
         }

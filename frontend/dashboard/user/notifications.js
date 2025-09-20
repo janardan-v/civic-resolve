@@ -167,6 +167,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return roleString.charAt(0).toUpperCase() + roleString.slice(1);
     }
 
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     async function updateProfileHeader() {
         const userNameElement = document.getElementById('user-name');
         const userRoleElement = document.getElementById('user-role');
@@ -205,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Call the function on page load
     updateProfileHeader();
-    
+
     // Logout function
     function initializeLogoutButtons() {
         // Find all possible logout elements

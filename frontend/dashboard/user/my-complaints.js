@@ -16,6 +16,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- DATA FETCHING & INITIALIZATION ---
 
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     // Main function to initialize the page
     async function initializePage() {
         updateDateTime();

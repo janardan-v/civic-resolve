@@ -22,6 +22,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     // --- INITIALIZATION ---
     async function initializeAdminPage() {
         try {
