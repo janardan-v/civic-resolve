@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const tile = document.createElement('div');
             tile.className = 'category-tile';
             tile.dataset.category = category.name.toLowerCase().replace(/\s+/g, '-');
-            tile.dataset.categoryId = category._id || category.id;
+            tile.dataset.categoryId = category.categoryId;
 
             tile.innerHTML = `
                 <i class="bi bi-${getCategoryIcon(category.name)}"></i>
@@ -221,8 +221,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     function getCategoryIcon(categoryName) {
         const iconMap = {
             'water supply': 'water',
-            'roads': 'bricks',
-            'infrastructure': 'bricks',
+            'roads and infrastructure': 'bricks',
             'electricity': 'lightning',
             'sanitation': 'trash',
             'street lights': 'lamp',
