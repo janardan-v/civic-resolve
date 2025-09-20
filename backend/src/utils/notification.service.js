@@ -58,10 +58,10 @@ const sendPendingReportNotifications = async () => {
 
                 // Create a new notification entry in the database
                 await Notification.create({
-                    userId: assignedUser._id, // Use the user's ObjectId for the reference
+                    userId: assignedUser.userId, // Use the user's Id for the reference
                     message: notificationMessage,
                     type: "reminder",
-                    reportId: report._id // Use the report's ObjectId for the reference
+                    reportId: report.reportId // Use the report's Id for the reference
                 });
 
                 // Send an email notification
