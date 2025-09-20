@@ -388,13 +388,126 @@
             font-size: 48px;
             margin-bottom: 15px;
         }
+
+        @media (max-width: 450px) {
+            .dashboard-header {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .search-container {
+                width: 100%;
+                order: 1;
+            }
+
+            .user-menu {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            /* Corrected Sidebar - Mobile Off-canvas */
+            .sidebar {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                height: 100%;
+                width: 250px;
+                /* Explicitly set the width */
+                z-index: 1001;
+                transition: left 0.3s ease-in-out;
+                box-shadow: 20px 0 20px rgba(0, 0, 0, 0.3);
+                padding-top: 50px;
+                /* Add some top padding */
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            /* Hamburger Menu Icon */
+            .menu-toggle {
+                display: block;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 5px;
+                position: absolute;
+                top: 30px;
+                left: 20px;
+                z-index: 1002;
+            }
+
+            .menu-toggle .hamburger,
+            .menu-toggle .hamburger::before,
+            .menu-toggle .hamburger::after {
+                content: '';
+                display: block;
+                width: 25px;
+                height: 3px;
+                background-color: #333;
+                transition: all 0.3s ease-in-out;
+                border-radius: 2px;
+            }
+
+            body.dark-theme .menu-toggle .hamburger,
+            body.dark-theme .menu-toggle .hamburger::before,
+            body.dark-theme .menu-toggle .hamburger::after {
+                background-color: white;
+            }
+
+            .menu-toggle .hamburger::before {
+                transform: translateY(-8px);
+            }
+
+            .menu-toggle .hamburger::after {
+                transform: translateY(5px);
+            }
+
+            .menu-toggle.active .hamburger {
+                background-color: transparent;
+            }
+
+            .menu-toggle.active .hamburger::before {
+                transform: rotate(45deg) translate(2px, 0px);
+                background-color: white;
+                width: 20px;
+                position: fixed;
+            }
+
+            .menu-toggle.active .hamburger::after {
+                transform: rotate(-45deg) translate(0px, 2px);
+                background-color: white;
+                width: 20px;
+                position: fixed;
+            }
+
+            /* Main Content Area */
+            .main-content {
+                padding: 20px 15px;
+                overflow-x: hidden;
+                margin: 0;
+                /* Prevents horizontal scrolling from content overflow */
+            }
+
+            .near-me-container {
+                height: 115vh;
+            }
+
+            .near-me-map {
+                height: 100%
+            }
+
+            iframe {
+                height: 100%
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="dashboard-container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../../Images/logo.png" alt="Civic Resolve Logo" class="sidebar-logo">
                 <h3>Civic Resolve</h3>
@@ -422,7 +535,7 @@
                     </li>
                     <li class="separator"></li>
                     <li>
-                        <a href= "../../index.html" class="logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                        <a href="../../index.html" class="logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -434,6 +547,9 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span class="hamburger"></span>
+            </button>
             <!-- Top Header with user info and search -->
             <header class="dashboard-header">
                 <div class="search-container">
@@ -442,16 +558,17 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
 
                     <div class="user-profile">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -494,6 +611,7 @@
         </main>
     </div>
 
+    <script src="../../js/api-client.js"></script>
     <script>
         // Display current date in a readable format
         function setCurrentDate() {
@@ -509,6 +627,69 @@
             };
 
             dateElement.textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        const notificationButton = document.getElementById('notification-link');
+
+        notificationButton.addEventListener('click', () => {
+            window.location.href = 'notifications.html';
+        });
+
+        // Function to capitalize the first letter of the role
+        function capitalize(roleString) {
+            if (typeof roleString !== 'string' || roleString.length === 0) {
+                return '';
+            }
+            return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+        }
+
+        async function updateProfileHeader() {
+            const userNameElement = document.getElementById('user-name');
+            const userRoleElement = document.getElementById('user-role');
+
+            // Initial check for element existence
+            if (!userNameElement || !userRoleElement) {
+                console.error('User profile elements not found in the DOM.');
+                return;
+            }
+
+            try {
+                // Call the getCurrentUser API method
+                const response = await window.authAPI.getCurrentUser();
+
+                // Check if the API call was successful
+                if (response.success && response.data) {
+                    const userData = response.data;
+
+                    // Update the text content of the HTML elements
+                    userNameElement.textContent = userData.name || userData.username || 'User';
+                    userRoleElement.textContent = capitalize(userData.role) || 'Unknown Role';
+
+                } else {
+                    // Handle unsuccessful response
+                    console.error('Failed to fetch user data:', response.message);
+                    userNameElement.textContent = 'Guest';
+                    userRoleElement.textContent = '';
+                }
+            } catch (error) {
+                // Handle network or other errors
+                console.error('Error fetching user profile:', error);
+                userNameElement.textContent = 'Guest';
+                userRoleElement.textContent = '';
+            }
+        }
+
+        // Call the function on page load
+        updateProfileHeader();
+
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
         }
 
         // Function to handle the map switching
@@ -555,7 +736,7 @@
         }
 
         // Add window.onload event handler to initialize functions
-        window.onload = function() {
+        window.onload = function () {
             setCurrentDate();
             setupMapSwitching();
         };

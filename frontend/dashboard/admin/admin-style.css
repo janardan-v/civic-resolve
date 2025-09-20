@@ -244,8 +244,8 @@ header {
 }
 
 .stat-icon.document {
-    background-color: rgba(78, 115, 223, 0.1);
-    color: var(--primary-color);
+    background-color: rgba(223, 78, 78, 0.1);
+    color: var(--danger-color);
 }
 
 .stat-icon.resolved {
@@ -854,7 +854,7 @@ header {
     .main-content {
         margin-left: 70px;
         padding: 10px;
-        max-width: calc(100vw - 70px);
+        max-width: calc(100vw);
     }
 
     .filter-controls {
@@ -868,5 +868,118 @@ header {
 
     .issues-table {
         min-width: 600px;
+    }
+}
+
+@media (max-width: 450px) {
+    body {
+        display: block;
+        width: 100%;
+    }
+
+    header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .search-container {
+        width: 100%;
+        order: 2;
+        /* This places it second, below the profile */
+    }
+
+    /* Use the correct class from your HTML */
+    .admin-profile {
+        order: 1;
+        /* This places it first */
+        margin-left: auto;
+        /* This pushes it to the far right */
+    }
+
+    /* Corrected Sidebar - Mobile Off-canvas */
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        height: 100%;
+        width: 250px;
+        /* Explicitly set the width */
+        z-index: 1001;
+        transition: left 0.3s ease-in-out;
+        box-shadow: 20px 0 20px rgba(0, 0, 0, 0.3);
+        padding-top: 50px;
+        /* Add some top padding */
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Hamburger Menu Icon */
+    .menu-toggle {
+        display: block;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        position: absolute;
+        top: 30px;
+        left: 20px;
+        z-index: 1002;
+    }
+
+    .menu-toggle .hamburger,
+    .menu-toggle .hamburger::before,
+    .menu-toggle .hamburger::after {
+        content: '';
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        transition: all 0.3s ease-in-out;
+        border-radius: 2px;
+    }
+
+    body.dark-theme .menu-toggle .hamburger,
+    body.dark-theme .menu-toggle .hamburger::before,
+    body.dark-theme .menu-toggle .hamburger::after {
+        background-color: white;
+    }
+
+    .menu-toggle .hamburger::before {
+        transform: translateY(-8px);
+    }
+
+    .menu-toggle .hamburger::after {
+        transform: translateY(5px);
+    }
+
+    .menu-toggle.active .hamburger {
+        background-color: transparent;
+    }
+
+    .menu-toggle.active .hamburger::before {
+        transform: rotate(45deg) translate(2px, 0px);
+        background-color: white;
+        width: 20px;
+        position: fixed;
+    }
+
+    .menu-toggle.active .hamburger::after {
+        transform: rotate(-45deg) translate(0px, 2px);
+        background-color: white;
+        width: 20px;
+        position: fixed;
+    }
+
+    /* Main Content Area */
+    .main-content {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px 15px;
+        overflow-x: hidden;
+        margin: 0;
     }
 }

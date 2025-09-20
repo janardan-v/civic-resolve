@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Login - Civic Resolve</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
@@ -41,11 +42,13 @@
         background-attachment: fixed;
         height: 100vh;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
       
       .glass-card {
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
       }
@@ -53,6 +56,7 @@
       .form-glass {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
       }
       
       .btn-gradient {
@@ -85,13 +89,89 @@
       @media (max-width: 768px) {
         .signup-split {
           grid-template-columns: 1fr;
-          gap: 1rem;
+          gap: 1.5rem;
+        }
+        
+        .compact-container {
+          max-height: 100%;
+          padding-bottom: 2rem;
+        }
+        
+        .glass-card {
+          margin: 0.5rem;
+          padding: 1rem !important;
+        }
+        
+        .form-glass {
+          padding: 1rem !important;
+        }
+        
+        body {
+          overflow-y: auto;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .glass-card {
+          margin: 0.25rem;
+          padding: 0.75rem !important;
+        }
+        
+        .admin-modal {
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          min-width: 85vw !important;
+          max-width: 85vw !important;
+          top: 4rem !important;
         }
       }
       
       .compact-container {
         max-height: 95vh;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .admin-modal {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
+      
+      .admin-btn {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+      
+      .admin-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
+      
+      /* Better touch targets for mobile */
+      @media (max-width: 768px) {
+        .btn-gradient, button[type="button"], input {
+          min-height: 44px; /* Apple's recommendation for touch targets */
+        }
+        
+        input {
+          font-size: 16px !important; /* Prevents iOS zoom on input focus */
+        }
+      }
+      
+      /* Fix for mobile devices that don't support backdrop-filter */
+      @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+        .glass-card {
+          background: rgba(255, 255, 255, 0.85);
+        }
+        .admin-modal, .admin-btn {
+          background: rgba(255, 255, 255, 0.9);
+        }
       }
     </style>
   <!-- API Client Script -->
@@ -106,13 +186,55 @@
       <div class="absolute -right-28 -bottom-16 h-60 w-60 rounded-full bg-emerald-300 opacity-10 blur-3xl animate-pulse delay-1000"></div>
     </div>
 
-    <div class="relative w-full max-w-5xl px-4">
-      <div class="glass-card rounded-xl p-6 shadow-2xl compact-container" x-data="{ view: 'login' }">
+    <div class="relative w-full max-w-5xl px-2 sm:px-4">
+      <div class="glass-card rounded-xl p-4 sm:p-6 shadow-2xl compact-container" x-data="{ view: 'login', showAdminModal: false }">
+
+        <!-- Admin Button -->
+        <button @click="showAdminModal = true"
+          class="admin-btn absolute top-4 left-2 ml-2 sm:left-4 px-2 sm:px-3 py-2 rounded-lg text-white text-xs font-medium hover:text-green-100 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors">
+          <span class="material-symbols-outlined text-sm mr-1">admin_panel_settings</span>
+          <span class="hidden sm:inline">Admin Login</span>
+        </button>
+
+        <!-- Admin Modal -->
+        <div x-show="showAdminModal" 
+             @click.away="showAdminModal = false"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="fixed sm:absolute top-16 left-4 ml-0 sm:ml-4 z-50 admin-modal rounded-lg p-4 min-w-[280px]">
+          <div class="text-center mb-3">
+            <h3 class="text-sm font-semibold text-gray-800 mb-1">Admin Credentials</h3>
+            <p class="text-xs text-gray-600">Use these credentials to login as admin</p>
+          </div>
+          
+          <div class="space-y-2 text-xs">
+            <div class="bg-gray-50 p-2 rounded border">
+              <span class="font-medium text-gray-700 mb-1">Email:</span>
+              <span class="text-gray-600 font-mono">admin@gmail.com</span>
+            </div>
+            <div class="bg-gray-50 p-2 rounded border">
+              <span class="font-medium text-gray-700 mb-1">Password:</span>
+              <span class="text-gray-600 font-mono">Admin@45</span>
+            </div>
+          </div>
+          
+          <button @click="showAdminModal = false; 
+                          document.getElementById('user-email').value = 'admin@gmail.com';
+                          document.getElementById('user-password').value = 'Admin@45';
+                          view = 'login'"
+            class="w-full mt-3 py-2 px-3 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded transition-colors">
+            Fill Login Form
+          </button>
+        </div>
 
         <!-- Header -->
-        <div class="text-center mb-6">
-          <h1 class="text-3xl font-bold text-white mb-1">Civic Resolve</h1>
-          <p class="text-green-100 text-base">Government of Jharkhand</p>
+        <div class="text-center mb-4 sm:mb-6 pt-2 sm:pt-0">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white mb-1">Civic Resolve</h1>
+          <p class="text-green-100 text-sm sm:text-base">Government of Jharkhand</p>
         </div>
 
         <!-- Error/Success messages -->
@@ -120,16 +242,16 @@
         <div id="success-message" class="hidden mb-4 p-3 bg-green-500/20 border border-green-500/30 text-green-100 rounded-lg text-sm backdrop-blur-sm"></div>
 
         <!-- Navigation tabs -->
-        <div class="flex justify-center mb-6">
-          <div class="glass-card rounded-full p-1">
+        <div class="flex justify-center mb-4 sm:mb-6">
+          <div class="glass-card rounded-full p-1 w-full max-w-xs mx-auto flex">
             <button @click="view = 'login'" 
                     :class="view === 'login' ? 'bg-white text-green-700' : 'text-white'"
-                    class="px-6 py-2 rounded-full font-medium transition-all duration-300 text-sm">
+                    class="flex-1 px-3 sm:px-6 py-2 rounded-full font-medium transition-all duration-300 text-sm">
               Login
             </button>
             <button @click="view = 'signup'" 
                     :class="view === 'signup' ? 'bg-white text-green-700' : 'text-white'"
-                    class="px-6 py-2 rounded-full font-medium transition-all duration-300 text-sm">
+                    class="flex-1 px-3 sm:px-6 py-2 rounded-full font-medium transition-all duration-300 text-sm">
               Sign Up
             </button>
           </div>
@@ -137,14 +259,14 @@
 
         <!-- Close button -->
         <a href="index.html"
-          class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors">
+          class="absolute top-4 right-2 sm:right-4 w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors">
           <span class="material-symbols-outlined text-lg">close</span>
         </a>
 
         <!-------------- Login Form -------- -->
         <div x-show="view === 'login'" class="space-y-4">
-          <div class="form-glass rounded-xl p-6">
-            <div class="text-center mb-6">
+          <div class="form-glass rounded-xl p-4 sm:p-6">
+            <div class="text-center mb-4 sm:mb-6">
               <h2 class="text-xl font-bold text-gray-800">Welcome Back</h2>
               <p class="text-gray-600 mt-1 text-sm">Please sign in to your account</p>
             </div>
@@ -154,19 +276,19 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="user-email">Email Address</label>
                 <input id="user-email" name="email" type="email" required="" placeholder="you@example.com"
                   autocomplete="email"
-                  class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                  class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
               </div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1" for="user-password">Password</label>
                 <input id="user-password" name="password" type="password" required="" placeholder="••••••••"
                   autocomplete="current-password"
-                  class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                  class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
               </div>
 
               <div class="mt-6 flex justify-center">
                 <button type="button" id="login-button"
-                  class="btn-gradient w-1/2 py-2.5 px-6 rounded-lg text-white font-semibold shadow-lg">
+                  class="btn-gradient w-full sm:w-1/2 py-3 sm:py-2.5 px-6 rounded-lg text-white font-semibold shadow-lg">
                   Log In
                 </button>
               </div>
@@ -176,7 +298,7 @@
 
         <!-------------- Signup Form -------- -->
         <div x-show="view === 'signup'" class="space-y-4">
-          <div class="form-glass rounded-xl p-6">
+          <div class="form-glass rounded-xl p-4 sm:p-6">
             <div class="text-center mb-4">
               <h2 class="text-xl font-bold text-gray-800">Create Account</h2>
               <p class="text-gray-600 mt-1 text-sm">Join Civic Resolve today</p>
@@ -192,27 +314,27 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-username">Username</label>
                     <input id="signup-username" name="username" type="text" required=""
                       placeholder="Choose username"
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                   </div>
                   
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-name">Full Name</label>
                     <input id="signup-name" name="name" type="text" required="" placeholder="John Doe"
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                   </div>
                   
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-email">Email Address</label>
                     <input id="signup-email" name="email" type="email" required="" placeholder="you@example.com"
                       autocomplete="email"
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                   </div>
                   
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-phone">Phone Number</label>
                     <input id="signup-phone" name="phone" type="tel" required="" placeholder="1234567890"
                       pattern="[0-9]{10}" title="Please enter a 10-digit phone number"
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                   </div>
                 </div>
 
@@ -224,7 +346,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-password">Password</label>
                     <input id="signup-password" name="password" type="password" required="" placeholder="••••••••"
                       autocomplete="new-password" 
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                     <p class="mt-1 text-xs text-gray-500">
                       Min. 8 chars, 1 upper, 1 lower, 1 number, 1 special
                     </p>
@@ -234,13 +356,13 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1" for="signup-password-confirm">Confirm Password</label>
                     <input id="signup-password-confirm" name="password_confirmation" type="password" required=""
                       placeholder="••••••••" autocomplete="new-password"
-                      class="input-focus w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:outline-none text-sm" />
+                      class="input-focus w-full px-3 py-2.5 rounded-lg border border-gray-300 bg-white focus:outline-none text-base sm:text-sm" />
                   </div>
                   
                   <!-- Submit button -->
                   <div class="flex-grow flex items-end justify-center mt-4">
                     <button type="button" id="signup-button"
-                      class="btn-gradient w-full py-2.5 px-6 rounded-lg text-white font-semibold shadow-lg">
+                      class="btn-gradient w-full py-3 sm:py-2.5 px-6 rounded-lg text-white font-semibold shadow-lg">
                       Create Account
                     </button>
                   </div>

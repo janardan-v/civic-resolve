@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Civic Resolve</title>
+    <title>Admin Notifications - Civic Resolve</title>
     <link rel="stylesheet" href="admin-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,121 +14,6 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <style>
-        .user-profile-section {
-            width: 100%;
-            /* margin-top: 20px; */
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .user-profile-card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #f0f0f0;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-info h2 {
-            font-size: 1.8rem;
-            color: #333;
-            margin: 0;
-        }
-
-        .role-badge {
-            background-color: #e3f2fd;
-            color: #1e88e5;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            align-self: flex-start;
-            margin-top: 5px;
-        }
-
-        /* ======================================= */
-        /* === Form Styles === */
-        /* ======================================= */
-
-        .profile-details-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            /* Two columns for a balanced layout */
-            gap: 25px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            color: #333;
-            background-color: #fafafa;
-            cursor: not-allowed;
-            /* Indicates that the field is read-only */
-        }
-
-        /* ======================================= */
-        /* === Responsive Design === */
-        /* ======================================= */
-
-        @media (max-width: 768px) {
-            .user-profile-card {
-                padding: 20px;
-            }
-
-            .profile-details-form {
-                grid-template-columns: 1fr;
-                /* Stack columns on smaller screens */
-            }
-
-            .profile-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-info {
-                align-items: center;
-            }
-        }
-
-        /* ======================================= */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f9;
@@ -175,6 +60,78 @@
             font-size: 1rem;
             color: #555;
             margin: 0;
+        }
+
+        /* Styles for the notification list */
+        .notification-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-top: 20px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            color: #1a237e;
+            margin-right: 15px;
+            padding-top: 5px;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-content h4 {
+            margin: 0 0 5px;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .notification-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .notification-meta {
+            margin-left: 20px;
+            color: #999;
+            font-size: 0.8rem;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .notification-meta .time {
+            display: block;
+        }
+
+        .notification-item.read {
+            opacity: 0.7;
+        }
+
+        .notification-item.unread {
+            font-weight: bold;
+        }
+
+        #notifications-list {
+            min-height: 200px;
         }
 
 
@@ -284,7 +241,7 @@
 
             /* Main Content Area */
             .main-content {
-                max-width: 100%;
+                width: 100%;
                 box-sizing: border-box;
                 padding: 20px 15px;
                 overflow-x: hidden;
@@ -308,13 +265,13 @@
                 <i class="fas fa-tasks"></i> Manage Complaints
             </a>
 
-            <a href="notifications.html" class="nav-item">
+            <a href="#" class="nav-item active">
                 <i class="fas fa-bell"></i> Notifications
             </a>
             <a href="analytics.html" class="nav-item">
                 <i class="fas fa-chart-bar"></i> Analytics
             </a>
-            <a href="#" class="nav-item active">
+            <a href="settings.html" class="nav-item">
                 <i class="fas fa-cog"></i> Settings
             </a>
             <a href="../../index.html" class="nav-item logout">
@@ -350,73 +307,41 @@
 
         <div class="welcome-section">
             <div>
-                <h1>Admin Profile</h1>
+                <h1>Notifications</h1>
             </div>
             <div class="date">
                 <p id="current-date">Thursday 11 September, 2025</p>
             </div>
         </div>
 
-        <div class="user-profile">
-
+        <div class="notification-container">
+            <div id="notifications-list">
+                <p style="text-align: center; color: #777;">Loading notifications...</p>
+            </div>
         </div>
     </div>
 
     <script src="../../js/api-client.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Create and append the user profile HTML structure ---
-            const mainContent = document.querySelector('.main-content');
-            const profileHTML = `
-        <div class="user-profile-section">
-            <div class="user-profile-card">
-                <div class="profile-header">
-                    <img id="profile-avatar" src="https://img.icons8.com/?size=100&id=n7xIHKJORoVJ&format=png&color=000000" alt="User Avatar" class="profile-avatar">
-                    <div class="profile-info">
-                        <h2 id="profile-name-header">User Name</h2>
-                        <span id="profile-role" class="role-badge">Role</span>
-                    </div>
-                </div>
-                <div class="profile-details-form">
-                    <div class="form-group">
-                        <label for="profile-name">Full Name</label>
-                        <input type="text" id="profile-name" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-username">Username</label>
-                        <input type="text" id="profile-username" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-email">Email Address</label>
-                        <input type="email" id="profile-email" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-phone">Phone Number</label>
-                        <input type="tel" id="profile-phone" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="profile-userid">User ID</label>
-                        <input type="text" id="profile-userid" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin-profile-role">Role</label>
-                        <input type="text" id="admin-profile-role" class="form-control" readonly>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+        document.addEventListener("DOMContentLoaded", function () {
+            // Update the current date
+            const dateElement = document.getElementById('current-date');
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('en-US', options);
 
-            const welcomeSection = document.querySelector('.welcome-section');
-            if (welcomeSection && mainContent) {
-                welcomeSection.insertAdjacentHTML('afterend', profileHTML);
-            }
+            const notificationsList = document.getElementById('notifications-list');
+
+            // Function to format the date
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                return date.toLocaleString(); // e.g., "9/19/2025, 3:00:00 PM"
+            };
 
             function capitalize(string) {
-                if (!string) return '';
                 return string.charAt(0).toUpperCase() + string.slice(1);
             }
-            
+
             const menuToggle = document.querySelector('.menu-toggle');
             const sidebar = document.getElementById('sidebar');
 
@@ -427,77 +352,84 @@
                 });
             }
 
-            // --- Function to update the profile with data ---
-            function updateProfileDisplay(userData) {
-                const nameHeader = document.getElementById('profile-name-header');
-                const roleBadge = document.getElementById('profile-role');
-                const nameInput = document.getElementById('profile-name');
-                const usernameInput = document.getElementById('profile-username');
-                const emailInput = document.getElementById('profile-email');
-                const phoneInput = document.getElementById('profile-phone'); // New phone number element
-                const userIdInput = document.getElementById('profile-userid');
-                const avatarImg = document.getElementById('profile-avatar');
-                const roleInput = document.getElementById('admin-profile-role');
+            // Function to render notifications on the page
+            const renderNotifications = (notifications) => {
+                notificationsList.innerHTML = ''; // Clear existing list
 
-                if (userData) {
-                    nameHeader.textContent = userData.name || userData.username;
-                    roleBadge.textContent = capitalize(userData.role.replace('_', ' ')) || 'Unknown Role';
-                    nameInput.value = userData.name || '';
-                    usernameInput.value = capitalize(userData.username) || '';
-                    emailInput.value = userData.email || '';
-                    phoneInput.value = userData.phoneNumber || ''; // Populate with phone number
-                    userIdInput.value = userData.userId || '';
-                    roleInput.value = capitalize(userData.role.replace('_', ' ')) || 'Admin';
-                    if (userData.avatarUrl) {
-                        avatarImg.src = userData.avatarUrl;
-                    }
-                }
-            }
-
-            // --- Asynchronous function to fetch and display the user profile ---
-            async function loadUserProfile() {
-                const token = localStorage.getItem('token');
-
-                if (!token) {
-                    console.log('No token found. Redirecting to login.');
-                    window.location.href = '../../index.html';
+                if (!notifications || notifications.length === 0) {
+                    notificationsList.innerHTML = '<p style="text-align: center; color: #777;">No new notifications.</p>';
                     return;
                 }
 
+                notifications.forEach(notification => {
+                    const isUnread = notification.status === 'unread';
+                    const itemClass = isUnread ? 'notification-item unread' : 'notification-item read';
+                    const icon = getNotificationIcon(notification.type);
+
+                    const notificationElement = document.createElement('div');
+                    notificationElement.className = itemClass;
+                    notificationElement.innerHTML = `
+                <div class="notification-icon">
+                    <i class="${icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <h4>${capitalize(notification.reportId.title)}</h4>
+                    <p>${notification.message}</p>
+                </div>
+                <div class="notification-meta">
+                    <span class="time">${formatDate(notification.createdAt)}</span>
+                </div>
+            `;
+                    notificationsList.appendChild(notificationElement);
+                });
+            };
+
+            // Function to determine the appropriate icon based on notification type
+            const getNotificationIcon = (type) => {
+                switch (type) {
+                    case 'new_complaint':
+                        return 'fas fa-plus-circle';
+                    case 'complaint_update':
+                        return 'fas fa-sync-alt';
+                    case 'report_assigned':
+                        return 'fas fa-tasks';
+                    case 'new_user':
+                        return 'fas fa-user-plus';
+                    default:
+                        return 'fas fa-bell';
+                }
+            };
+
+            // Function to fetch notifications from the API client
+            const fetchNotifications = async () => {
                 try {
-                    const result = await window.authAPI.getCurrentUser();
+                    // Using the assumed 'notificationsAPI' client method
+                    const result = await notificationsAPI.getMyNotifications();
 
-                    if (result.success && result.data) {
-                        updateProfileDisplay(result.data);
+                    if (result.success) {
+                        // The notifications array is the 'data' property of the result
+                        const notifications = result.data;
+                        renderNotifications(notifications);
+
+                        // Fix: Check the status of each notification
+                        const unreadCount = notifications.filter(n => n.status === 'unread').length;
+                        document.querySelector('.notification-count').textContent = unreadCount;
                     } else {
-                        console.error('API response was not successful:', result.message);
-
-                        if (result.statusCode === 401) {
-                            console.error('Session expired. Redirecting to login.');
-                            localStorage.removeItem('token');
-                            window.location.href = '../../index.html';
-                        }
-                        updateProfileDisplay(null);
+                        notificationsList.innerHTML = `<p style="text-align: center; color: #ff0000;">Failed to load notifications: ${result.message}</p>`;
                     }
+
                 } catch (error) {
-                    console.error('Error fetching user profile:', error);
-                    updateProfileDisplay(null);
+                    console.error('Error fetching notifications:', error);
+                    notificationsList.innerHTML = `<p style="text-align: center; color: #ff0000;">Failed to load notifications. Please try again later.</p>`;
                 }
-            }
+            };
 
-            // --- Date Function ---
-            function updateDateTime() {
-                const dateElement = document.getElementById('current-date');
-                if (dateElement) {
-                    const now = new Date();
-                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                    dateElement.textContent = now.toLocaleDateString('en-US', options);
-                }
-            }
+            // Fetch notifications on page load
+            fetchNotifications();
 
-            // Call the functions to load the profile and update the date when the page loads
-            loadUserProfile();
-            updateDateTime();
+            // Set up a refresh interval to get new notifications every 60 seconds
+            setInterval(fetchNotifications, 60000); // 60000 milliseconds = 1 minute
+
 
             // Logout function
             const logoutButton = document.querySelector('.logout');
@@ -617,6 +549,7 @@
                 });
             }
         });
+
     </script>
 </body>
 

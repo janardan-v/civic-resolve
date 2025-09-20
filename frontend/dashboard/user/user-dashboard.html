@@ -18,7 +18,7 @@
 <body>
     <div class="dashboard-container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../../Images/logo.png" alt="Civic Resolve Logo" class="sidebar-logo">
                 <h3>Civic Resolve</h3>
@@ -58,6 +58,10 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span class="hamburger"></span>
+            </button>
+
             <!-- Top Header with user info and search -->
             <header class="dashboard-header">
                 <div class="search-container">
@@ -66,16 +70,17 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
 
                     <div class="user-profile">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -452,6 +457,15 @@
             const activityTimeline = document.querySelector('.activity-timeline .timeline');
 
             // --- INITIALIZATION ---
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+            }
 
             // Main function to load all dynamic data for the page
             async function initializeDashboard() {
@@ -621,6 +635,12 @@
             }
 
             // --- EVENT LISTENERS ---
+
+            const notificationButton = document.getElementById('notification-link');
+
+            notificationButton.addEventListener('click', () => {
+                window.location.href = 'notifications.html';
+            });
 
             // Set up logout button
             if (logoutLink) {

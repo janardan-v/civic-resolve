@@ -161,13 +161,114 @@
         .btn-secondary:hover {
             background-color: #5a6268;
         }
+
+        @media (max-width: 450px) {
+            .dashboard-header {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .search-container {
+                width: 100%;
+                order: 1;
+            }
+
+            .user-menu {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            /* Corrected Sidebar - Mobile Off-canvas */
+            .sidebar {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                height: 100%;
+                width: 250px;
+                /* Explicitly set the width */
+                z-index: 1001;
+                transition: left 0.3s ease-in-out;
+                box-shadow: 20px 0 20px rgba(0, 0, 0, 0.3);
+                padding-top: 50px;
+                /* Add some top padding */
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            /* Hamburger Menu Icon */
+            .menu-toggle {
+                display: block;
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 5px;
+                position: absolute;
+                top: 30px;
+                left: 20px;
+                z-index: 1002;
+            }
+
+            .menu-toggle .hamburger,
+            .menu-toggle .hamburger::before,
+            .menu-toggle .hamburger::after {
+                content: '';
+                display: block;
+                width: 25px;
+                height: 3px;
+                background-color: #333;
+                transition: all 0.3s ease-in-out;
+                border-radius: 2px;
+            }
+
+            body.dark-theme .menu-toggle .hamburger,
+            body.dark-theme .menu-toggle .hamburger::before,
+            body.dark-theme .menu-toggle .hamburger::after {
+                background-color: white;
+            }
+
+            .menu-toggle .hamburger::before {
+                transform: translateY(-8px);
+            }
+
+            .menu-toggle .hamburger::after {
+                transform: translateY(5px);
+            }
+
+            .menu-toggle.active .hamburger {
+                background-color: transparent;
+            }
+
+            .menu-toggle.active .hamburger::before {
+                transform: rotate(45deg) translate(2px, 0px);
+                background-color: white;
+                width: 20px;
+                position: fixed;
+            }
+
+            .menu-toggle.active .hamburger::after {
+                transform: rotate(-45deg) translate(0px, 2px);
+                background-color: white;
+                width: 20px;
+                position: fixed;
+            }
+
+            /* Main Content Area */
+            .main-content {
+                padding: 20px 15px;
+                overflow-x: hidden;
+                margin: 0;
+                /* Prevents horizontal scrolling from content overflow */
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="dashboard-container">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../../Images/logo.png" alt="Civic Resolve Logo" class="sidebar-logo">
                 <h3>Civic Resolve</h3>
@@ -176,7 +277,7 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a href="user-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="new-complaint.html"><i class="bi bi-plus-circle"></i> New Complaint</a>
@@ -207,6 +308,9 @@
 
         <!-- Main Content Area -->
         <main class="main-content">
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span class="hamburger"></span>
+            </button>
             <!-- Top Header with user info and search -->
             <header class="dashboard-header">
                 <div class="search-container">
@@ -215,16 +319,17 @@
                 </div>
 
                 <div class="user-menu">
-                    <button class="notifications">
+                    <button class="notifications" id="notification-link">
                         <i class="bi bi-bell"></i>
                         <span class="badge">3</span>
                     </button>
 
                     <div class="user-profile">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Profile">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Profile">
                         <div class="user-info">
-                            <h4>Rahul Sharma</h4>
-                            <p>Citizen</p>
+                            <h4 id="user-name">Loading...</h4>
+                            <p id="user-role">Loading...</p>
                         </div>
                         <i class="bi bi-chevron-down"></i>
                     </div>
@@ -244,7 +349,8 @@
             <section class="user-profile-card">
                 <div class="profile-card-header">
                     <div class="profile-avatar-container">
-                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000" alt="User Avatar" id="profile-avatar">
+                        <img src="https://img.icons8.com/?size=100&id=9q3GMpxNIMjC&format=png&color=000000"
+                            alt="User Avatar" id="profile-avatar">
                         <button class="change-avatar-btn" title="Change Avatar">
                             <i class="bi bi-camera-fill"></i>
                         </button>
@@ -304,6 +410,16 @@
             const phoneInput = document.getElementById('profile-phone');
             const userIdInput = document.getElementById('profile-userid');
 
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+
             // Function to fetch and display the user profile
             async function loadUserProfile() {
                 try {
@@ -342,6 +458,177 @@
             // Call the function to load the profile when the page loads
             loadUserProfile();
         });
+
+        // Logout function
+        const logoutButton = document.querySelector('.logout');
+        function initializeLogoutButtons() {
+            // Find all possible logout elements
+            const logoutButtons = document.querySelectorAll('.logout, .logout-btn, [data-action="logout"]');
+            const logoutLinks = document.querySelectorAll('a[href*="logout"], a.logout');
+
+            // Attach logout to all logout buttons
+            logoutButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    logout();
+                });
+            });
+
+            // Attach logout to all logout links
+            logoutLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    logout();
+                });
+            });
+
+            // Add keyboard shortcut for logout (Ctrl+Alt+L)
+            document.addEventListener('keydown', function (e) {
+                if (e.ctrlKey && e.altKey && e.key === 'l') {
+                    e.preventDefault();
+                    logout();
+                }
+            });
+
+            console.log(`Logout functionality attached to ${logoutButtons.length + logoutLinks.length} elements`);
+        }
+
+
+        // Auto-logout on token expiration
+        function checkTokenExpiration() {
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                console.log('No token found, redirecting to login');
+                window.location.href = '../../login.html';
+                return;
+            }
+
+            try {
+                // Decode JWT token to check expiration
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const currentTime = Math.floor(Date.now() / 1000);
+
+                if (payload.exp && payload.exp < currentTime) {
+                    console.log('Token expired, auto-logging out');
+                    alert('Your session has expired. Please log in again.');
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    window.location.href = '../../login.html';
+                }
+            } catch (error) {
+                console.error('Error checking token expiration:', error);
+                // If token is malformed, clear it and redirect
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = '../../login.html';
+            }
+        }
+
+        // Initialize logout functionality
+        initializeLogoutButtons();
+
+        // Check token expiration immediately
+        checkTokenExpiration();
+
+        // Check token expiration every hour
+        setInterval(checkTokenExpiration, 60 * 60 * 1000);
+
+        console.log('Token expiration check initialized');
+
+        // Logout button
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    // Clear all authentication data from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('refreshToken');
+
+                    // Clear all session storage
+                    sessionStorage.clear();
+
+                    // Clear any cached data
+                    allComplaints = [];
+
+                    // Clear any cookies (if using httpOnly cookies)
+                    document.cookie.split(";").forEach(function (c) {
+                        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+                    });
+
+                    console.log('User logged out successfully - all data cleared');
+
+                    // Redirect to login page
+                    window.location.href = '../../index.html';
+
+                } catch (error) {
+                    console.error('Logout error:', error);
+
+                    // Even if there's an error, clear local data and redirect
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    console.log('Forced logout due to error - all data cleared');
+                    alert('Logged out successfully');
+                    window.location.href = '../../login.html';
+                }
+            });
+        }
+
+        const notificationButton = document.getElementById('notification-link');
+
+        notificationButton.addEventListener('click', () => {
+            window.location.href = 'notifications.html';
+        });
+
+        // Function to capitalize the first letter of the role
+        function capitalize(roleString) {
+            if (typeof roleString !== 'string' || roleString.length === 0) {
+                return '';
+            }
+            return roleString.charAt(0).toUpperCase() + roleString.slice(1);
+        }
+
+        async function updateProfileHeader() {
+            const userNameElement = document.getElementById('user-name');
+            const userRoleElement = document.getElementById('user-role');
+
+            // Initial check for element existence
+            if (!userNameElement || !userRoleElement) {
+                console.error('User profile elements not found in the DOM.');
+                return;
+            }
+
+            try {
+                // Call the getCurrentUser API method
+                const response = await window.authAPI.getCurrentUser();
+
+                // Check if the API call was successful
+                if (response.success && response.data) {
+                    const userData = response.data;
+
+                    // Update the text content of the HTML elements
+                    userNameElement.textContent = userData.name || userData.username || 'User';
+                    userRoleElement.textContent = capitalize(userData.role) || 'Unknown Role';
+
+                } else {
+                    // Handle unsuccessful response
+                    console.error('Failed to fetch user data:', response.message);
+                    userNameElement.textContent = 'Guest';
+                    userRoleElement.textContent = '';
+                }
+            } catch (error) {
+                // Handle network or other errors
+                console.error('Error fetching user profile:', error);
+                userNameElement.textContent = 'Guest';
+                userRoleElement.textContent = '';
+            }
+        }
+
+        // Call the function on page load
+        updateProfileHeader();
     </script>
 </body>
 

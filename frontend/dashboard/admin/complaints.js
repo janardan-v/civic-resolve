@@ -17,6 +17,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let allComplaints = []; // Cache for all fetched complaints
 
+    function capitalizeFirstLetter(string) {
+        if (!string) return '';
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    }
+
     // --- INITIALIZATION ---
     async function initializeAdminPage() {
         try {
@@ -73,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         tile.innerHTML = `
             <div class="complaint-tile-header">
                 <h4>#${complaint.reportId}</h4>
-                <span class="status-badge status-${complaint.status.replace('_', '-')}">${complaint.status.replace('_', ' ')}</span>
+                <span class="status-badge status-${complaint.status.replace('_', '-')}">${capitalizeFirstLetter(complaint.status.replace('_', ' '))}</span>
             </div>
             <div class="complaint-tile-body">
                 <p><strong>Title:</strong> ${complaint.title}</p>
@@ -246,8 +261,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>Title:</strong> ${complaint.title}</p>
                     <p><strong>Description:</strong> ${complaint.description}</p>
                     <hr>
-                    <p><strong>Status:</strong> ${complaint.status}</p>
-                    <p><strong>Priority:</strong> ${complaint.priority}</p>
+                    <p><strong>Status:</strong> ${capitalizeFirstLetter(complaint.status.replace('_', ' '))}</p>
+                    <p><strong>Priority:</strong> ${capitalizeFirstLetter(complaint.priority.replace('_', ' '))}</p>
                     <hr>
                     <p><strong>Filed By:</strong> ${complaint.userId?.name || 'N/A'}</p>
                     <p><strong>Email:</strong> ${complaint.userId?.email || 'N/A'}</p>
@@ -256,9 +271,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>Location:</strong> Lat: ${complaint.location_lat}, Lng: ${complaint.location_lng}</p>
                     <p><strong>Date Filed:</strong> ${new Date(complaint.createdAt).toLocaleString('en-IN')}</p>
                     ${complaint.photo_url ? `<p><strong>Photo:</strong> <a href="${complaint.photo_url}" target="_blank">View Image</a></p>` : ''}
-                </div>
-            </div>
-        `;
+                    ${complaint.voice_recording_url ? `
+                            <p><strong>Audio Description:</strong></p>
+                            <audio controls style="width: 100%; margin-top: 5px;">
+                                <source src="${complaint.voice_recording_url}" type="audio/webm">
+                                Your browser does not support the audio element.
+                            </audio>
+                        ` : ''}
+                </div >
+            </div >
+            `;
         document.body.appendChild(modalOverlay);
     };
 
@@ -293,8 +315,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         <button type="submit" class="btn-primary">Update Status</button>
                     </form>
                 </div>
-            </div>
-        `;
+            </div >
+            `;
         document.body.appendChild(modalOverlay);
 
         // Add event listener to the new form
@@ -308,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 closeModal();
                 loadAllComplaints(); // Refresh the list
             } catch (error) {
-                alert(`Error updating status: ${error.message}`);
+                alert(`Error updating status: ${error.message} `);
             }
         });
     };
