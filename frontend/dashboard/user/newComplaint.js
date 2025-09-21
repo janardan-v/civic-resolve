@@ -125,12 +125,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     const removeImageBtn = document.getElementById('remove-image');
     const submitBtn = document.getElementById('submit-complaint');
     const voiceInput = document.getElementById('voice-recording');
+    const locationAddress = document.getElementById('location-address');
+    const locationLat = document.getElementById('location-lat');
+    const locationLng = document.getElementById('location-lng');
 
     let currentLocation = { lat: null, lng: null };
     let selectedCategory = null;
     let selectedCategoryId = null;
     let currentStep = 1;
     let availableCategories = [];
+    let map;
 
     // Success overlay state management
     let overlayJustOpened = false;
@@ -275,6 +279,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 step.classList.remove('active', 'completed');
             }
         });
+
+        if (stepNumber === 3 && map) {
+            // Use a small timeout to ensure the container is visible before resizing.
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 100)
+        }
     }
 
     // Photo upload functionality
@@ -521,6 +532,86 @@ document.addEventListener('DOMContentLoaded', async function () {
             alert('Geolocation is not supported by this browser.');
         }
     }
+    
+    function initializeMap() {
+        const mapContainer = document.getElementById('location-map');
+        if (!mapContainer) return;
+
+        map = L.map(mapContainer).setView([28.6139, 77.2090], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker;
+
+        function updateMapAndFormState(lat, lng, zoomLevel) {
+            // 1. Update the map view
+            map.setView([lat, lng], zoomLevel);
+
+            // 2. Update the marker
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                marker.on('dragend', (e) => {
+                    const newPos = e.target.getLatLng();
+                    updateMapAndFormState(newPos.lat, newPos.lng, map.getZoom());
+                });
+            }
+
+            // 3. CRUCIAL: Update the main script's state variable
+            currentLocation.lat = lat;
+            currentLocation.lng = lng;
+            console.log('Form location state updated:', currentLocation);
+
+            // 4. Fetch address and update UI
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    const address = data.display_name || 'Address not found.';
+                    document.getElementById('location-address').textContent = address;
+                    document.getElementById('location-lat').textContent = lat.toFixed(6);
+                    document.getElementById('location-lng').textContent = lng.toFixed(6);
+                    document.getElementById('selected-location').style.display = 'block';
+
+                    // 5. CRUCIAL: Enable the Next button
+                    const nextBtn = document.getElementById('next-3');
+                    if (nextBtn) {
+                        nextBtn.disabled = false;
+                        console.log('Next button for Step 3 enabled by map interaction.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching address:', error);
+                    document.getElementById('location-address').textContent = 'Could not fetch address.';
+                });
+        }
+
+        // Event listener for manual address search
+        const addressInput = document.getElementById('address-input');
+        addressInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = addressInput.value;
+                if (!query) return;
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const { lat, lon } = data[0];
+                            updateMapAndFormState(parseFloat(lat), parseFloat(lon), 16);
+                        } else {
+                            alert('Location not found.');
+                        }
+                    });
+            }
+        });
+
+        // Event listener for map clicks
+        map.on('click', (e) => {
+            updateMapAndFormState(e.latlng.lat, e.latlng.lng, map.getZoom());
+        });
+    }
 
     // Navigation buttons
     document.querySelectorAll('.btn-next').forEach(btn => {
@@ -591,16 +682,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         }
 
-        // Update location review
-        const reviewCoords = document.getElementById('review-coords');
-        const reviewAddress = document.getElementById('review-address');
+        const reviewAddressEl = document.getElementById('review-address');
+        const reviewCoordsEl = document.getElementById('review-coords');
 
-        if (reviewCoords && currentLocation.lat && currentLocation.lng) {
-            reviewCoords.textContent = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
+        if (reviewAddressEl && locationAddress) {
+            // Use the text from the location step's address element
+            reviewAddressEl.textContent = locationAddress.textContent || 'No address provided';
         }
 
-        if (reviewAddress && locationAddress) {
-            reviewAddress.textContent = locationAddress.textContent || 'No address provided';
+        if (reviewCoordsEl && currentLocation.lat && currentLocation.lng) {
+            reviewCoordsEl.textContent = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
         }
     }
 
@@ -773,6 +864,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Initialize first step
         showStep(1);
 
+        initializeMap();
         console.log('New complaint form initialized');
     }
 
