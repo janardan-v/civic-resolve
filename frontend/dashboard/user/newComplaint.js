@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     let currentStep = 1;
     let availableCategories = [];
     let map;
+    let marker;
 
     // Success overlay state management
     let overlayJustOpened = false;
@@ -497,42 +498,68 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    currentLocation.lat = position.coords.latitude;
-                    currentLocation.lng = position.coords.longitude;
-
-                    const addressInput = document.getElementById('address-input');
-                    const selectedLocationDiv = document.getElementById('selected-location');
-                    const locationLat = document.getElementById('location-lat');
-                    const locationLng = document.getElementById('location-lng');
-
-                    if (addressInput) {
-                        addressInput.value = `${currentLocation.lat.toFixed(6)}, ${currentLocation.lng.toFixed(6)}`;
-                    }
-
-                    if (selectedLocationDiv) {
-                        selectedLocationDiv.style.display = 'block';
-                    }
-
-                    if (locationLat) locationLat.textContent = currentLocation.lat.toFixed(6);
-                    if (locationLng) locationLng.textContent = currentLocation.lng.toFixed(6);
-
-                    const nextBtn = document.getElementById('next-3');
-                    if (nextBtn) {
-                        nextBtn.disabled = false;
-                    }
-
-                    console.log('Location obtained:', currentLocation);
+                    updateMapAndFormState(position.coords.latitude, position.coords.longitude, 16);
                 },
                 (error) => {
                     console.error('Geolocation error:', error);
-                    alert('Unable to get your location. Please enter it manually or enable location services.');
+                    alert('Unable to get your location. Please check your browser permissions.');
                 }
             );
         } else {
             alert('Geolocation is not supported by this browser.');
         }
     }
-    
+
+    function updateMapAndFormState(lat, lng, zoomLevel) {
+        // 1. Update the map view
+        map.setView([lat, lng], zoomLevel);
+
+        // 2. Update the marker
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+            marker.on('dragend', (e) => {
+                const newPos = e.target.getLatLng();
+                updateMapAndFormState(newPos.lat, newPos.lng, map.getZoom());
+            });
+        }
+
+        // 3. Update the main script's state variable
+        currentLocation.lat = lat;
+        currentLocation.lng = lng;
+        console.log('Form location state updated:', currentLocation);
+
+        // 4. Update the browser's address bar (URL)
+        const newUrl = `${window.location.pathname}?lat=${lat.toFixed(6)}&lng=${lng.toFixed(6)}`;
+        window.history.replaceState({ lat, lng }, '', newUrl);
+
+        // 5. Fetch the human-readable address and update all UI elements
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                const address = data.display_name || 'Address not found.';
+
+                document.getElementById('address-input').value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+                // Update the display area below the map
+                document.getElementById('location-address').textContent = address;
+                document.getElementById('location-lat').textContent = lat.toFixed(6);
+                document.getElementById('location-lng').textContent = lng.toFixed(6);
+                document.getElementById('selected-location').style.display = 'block';
+
+                // Enable the Next button
+                const nextBtn = document.getElementById('next-3');
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching address:', error);
+                document.getElementById('location-address').textContent = 'Could not fetch address.';
+            });
+    }
+
     function initializeMap() {
         const mapContainer = document.getElementById('location-map');
         if (!mapContainer) return;
@@ -541,51 +568,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
-
-        let marker;
-
-        function updateMapAndFormState(lat, lng, zoomLevel) {
-            // 1. Update the map view
-            map.setView([lat, lng], zoomLevel);
-
-            // 2. Update the marker
-            if (marker) {
-                marker.setLatLng([lat, lng]);
-            } else {
-                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-                marker.on('dragend', (e) => {
-                    const newPos = e.target.getLatLng();
-                    updateMapAndFormState(newPos.lat, newPos.lng, map.getZoom());
-                });
-            }
-
-            // 3. CRUCIAL: Update the main script's state variable
-            currentLocation.lat = lat;
-            currentLocation.lng = lng;
-            console.log('Form location state updated:', currentLocation);
-
-            // 4. Fetch address and update UI
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                .then(res => res.json())
-                .then(data => {
-                    const address = data.display_name || 'Address not found.';
-                    document.getElementById('location-address').textContent = address;
-                    document.getElementById('location-lat').textContent = lat.toFixed(6);
-                    document.getElementById('location-lng').textContent = lng.toFixed(6);
-                    document.getElementById('selected-location').style.display = 'block';
-
-                    // 5. CRUCIAL: Enable the Next button
-                    const nextBtn = document.getElementById('next-3');
-                    if (nextBtn) {
-                        nextBtn.disabled = false;
-                        console.log('Next button for Step 3 enabled by map interaction.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching address:', error);
-                    document.getElementById('location-address').textContent = 'Could not fetch address.';
-                });
-        }
 
         // Event listener for manual address search
         const addressInput = document.getElementById('address-input');
