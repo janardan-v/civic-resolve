@@ -1145,6 +1145,25 @@
                 align-items: flex-start;
                 flex-wrap: nowrap;
             }
+
+            .audio-controls {
+                display: flex;
+                gap: 10px;
+                margin-top: 10px;
+                flex-wrap: wrap;
+                flex-direction: column;
+                max-width: min-content;
+                margin:auto
+            }
+
+            #file-upload {
+                font-size: 0;
+            }
+
+            #file-upload::before {
+                content: "Upload Audio";
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -1359,7 +1378,7 @@
                                     <div class="file-upload-option" id="file-upload-option">
                                         <input type="file" id="audio-input" name="voiceRecording" accept="audio/*"
                                             class="audio-file-input">
-                                        <span>Or select an audio file to upload.</span>
+                                        <span id="file-upload">Or select an audio file to upload.</span>
                                     </div>
                                 </div>
                                 <audio id="audio-playback" controls></audio>
