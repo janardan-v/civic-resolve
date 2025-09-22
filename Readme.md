@@ -11,7 +11,7 @@ The project is divided into two main layers:
 
 - 🎬 Demo Video: [Watch Here](https://youtu.be/A14E4agoPgc?si=h_zh10WJmQEOZAqk)
 - 🌐 Deployed Site: [Visit Here](https://civic-resolve.vercel.app)
-- 📊 Project PPT: [View Presentation](https://drive.google.com/drive/folders/1j9cWQajplBm8EECQQQMokfYjYIVu8C_m?usp=sharing)
+- 📊 Project PPT: [View Presentation](https://drive.google.com/drive/folders/1j9cWQajplBm8EECQQQMoktTyWjVu8C_m?usp=sharing)
 
 ---
 
