@@ -1,162 +1,96 @@
-# 🌍 Civic Resolve
+﻿# Civic Resolve
 
-**Civic Resolve** is a full-stack web application designed for **civic issue reporting, tracking, and resolution**. It bridges the gap between **citizens** and **administrators**, offering transparency, accountability, and data-driven governance.  
+A civic issue reporting and tracking web application with separate citizen and administrator interfaces.
 
-The project is divided into two main layers:  
-- **Frontend**: A citizen- and admin-facing interface built with modern web standards.  
-- **Backend**: A powerful, secure engine handling authentication, complaint lifecycle management, notifications, and analytics.  
+## Overview
 
----
-## 🎥 Demo & Resources
+Civic Resolve is a full-stack web project for managing civic complaints. Citizens submit reports with media and location details, and administrators manage those reports through status updates, departmental assignment, and resolution tracking.
 
-- 🎬 Demo Video: [Watch Here](https://youtu.be/A14E4agoPgc?si=h_zh10WJmQEOZAqk)
-- 🌐 Deployed Site: [Visit Here](https://civic-resolve.vercel.app)
-- 📊 Project PPT: [View Presentation](https://drive.google.com/drive/folders/1j9cWQajplBm8EECQQQMoktTyWjVu8C_m?usp=sharing)
+The backend is built with Node.js, Express, and MongoDB. The frontend uses static HTML, CSS, and JavaScript pages that interact with the REST API through a shared API client.
 
----
+## Features
 
-## 👥 Team Members  
+### Citizen features
+- Register and login with email and password.
+- Submit complaints with photo upload, optional voice recording, category, and geolocation.
+- View personal complaint history and current status.
+- Receive notifications for report status changes and reminders.
+- Browse local service pages for police, hospital, and EV station information.
 
-| Name                | Roll No.     | Role                  |
-|---------------------|--------------|-----------------------|
-| **Devyansh Dingolia** | 2024UCS1537 | Full-Stack Developer  |
-| **Janardhan Verma**   | 2024UCS1538 | Backend Developer     |
-| **Yash Kumar**        | 2024UCS1535 | Frontend Developer    |
-| **Manish Mandia**     | 2024UCS1576 | Frontend Developer    |
-| **Sakshi Yadav**      | 2024UCS1575 | Backend Developer     |
-| **Bhardwaj Kartikey** | 2024UCS1539 | AI/ML Engineer        |
+### Administrator features
+- Access protected admin dashboard pages.
+- View all reports and complaint metadata.
+- Update report status and assign reports to departments or officials.
+- Resolve reports with completion evidence.
+- Fetch analytics and dashboard summary data.
 
----
+### Platform features
+- JWT authentication with access and refresh tokens.
+- Role-based access control for citizen, department_admin, and super_admin.
+- File upload pipeline with temporary local storage and Cloudinary media upload.
+- Background job that sends reminders for overdue pending reports.
+- Audit history tracking for report status changes.
 
-## 📂 Project Structure  
+## Tech Stack
+
+| Frontend | Backend | Database | Authentication | Storage | Automation | Other |
+|---|---|---|---|---|---|---|
+| HTML | Node.js | MongoDB | JWT | Cloudinary | node-cron | Express |
+| CSS | Express | Mongoose | bcrypt | multer |  | Nodemailer |
+| JavaScript |  |  | refresh tokens |  |  | cookie-parser |
+
+## Architecture Overview
+
+The app separates user-facing static pages from backend API logic. The frontend sends requests to `/api/v1/*` endpoints. The backend handles authentication, report CRUD, media upload, notifications, and analytics. A scheduled background task checks pending reports and sends reminders.
+
+```mermaid
+graph TD
+  Browser -->|HTTP| Frontend[Static Frontend]
+  Frontend -->|REST API| Backend[Express API]
+  Backend --> MongoDB[MongoDB]
+  Backend --> Cloudinary[Cloudinary]
+  Backend --> Email[Email Service]
+  Backend -->|Cron| NotificationService[Notification Service]
 ```
-civic-resolve/
-│  
-├── frontend/User & admin interfaces (HTML,CSS,JS)
-│ ├── index.html # Landing page
-│ ├── new-complaint.html # Complaint submission wizard
-│ ├── my-complaints.html # Citizen complaint tracker
-│ ├── near-me.html # Local services (maps)
-│ ├── admin-dashboard.html # Admin overview dashboard
-│ ├── complaints.html # Admin complaint management
-│ ├── js/ # API client & custom scripts
-│ └── style/ # CSS stylesheets
-│
-├── backend/ # Core application logic (Node.js + Express)
-│ └── src/
-│ ├── controllers/ # API controllers
-│ ├── models/ # MongoDB schemas
-│ ├── routes/ # REST endpoints
-│ ├── middlewares/ # Security & upload middleware
-│ └── utils/ # Helpers (email, cloud, analytics)
-│
-└── README.md # Project documentation
-```
+
+## Engineering Highlights
+
+- JWT authentication with access token validation and refresh token issuance.
+- Role-based authorization via middleware for regular users, department admins, and super admins.
+- Multipart file upload flow using `multer` and Cloudinary integration.
+- Scheduled background job for overdue report reminders.
+- Notification collection and report history tracking in MongoDB.
+- Modular backend architecture with separate controllers, routes, middlewares, and utils.
+
+## Project Workflow
+
+1. User registers or logs in.
+2. Citizen submits a complaint with media and location.
+3. The backend stores the report and creates a history entry.
+4. Admins review reports from the dashboard.
+5. Admins assign reports, update status, and resolve issues.
+6. Background job sends reminders for overdue pending reports.
+7. Citizens view updated statuses and notifications.
+
+## Folder Structure
+
+- `frontend/` – static HTML, CSS, and JavaScript pages.
+- `backend/` – Node.js/Express application and API.
+- `backend/src/controllers/` – request handlers.
+- `backend/src/models/` – Mongoose schemas.
+- `backend/src/routes/` – API route definitions.
+- `backend/src/middlewares/` – auth, file upload, and error handling.
+- `backend/src/utils/` – Cloudinary, email, analytics, notifications.
+
+## Getting Started
+
+1. Open `backend/`.
+2. Run `npm install`.
+3. Create a `.env` file with database, JWT, Cloudinary, email, and CORS values.
+4. Run `npm run dev`.
+5. Open frontend HTML files in a browser or static server.
 
 
+## License
 
----
-
-## 🎨 1. Frontend: A User-Centric Interface  
-
-The frontend provides **distinct experiences for citizens and administrators**.  
-
-### 👤 Citizen Experience  
-- **Main Website (`index.html`)** → Landing page with mission, features, and helplines. Includes a **chatbot assistant**.  
-- **Complaint Submission (`new-complaint.html`)** → Multi-step guided form with:  
-  - Photo & audio upload  
-  - Category selection  
-  - Location pinning on an interactive map  
-- **Issue Tracking (`my-complaints.html`)** → Track submitted complaints with live status, priority, and history.  
-- **Local Services (`near-me.html`)** → Map-based discovery of nearby police stations, hospitals, and emergency services.  
-
-### 🛡️ Administrator Experience  
-- **Dashboard (`admin-dashboard.html`)** → Overview with charts for:  
-  - Complaint categories  
-  - Resolution performance  
-  - Pending vs resolved counts  
-- **Complaint Management (`complaints.html`)** → Tools for:  
-  - Filtering by status/category  
-  - Viewing complaint details  
-  - Updating status or assigning to departments  
-
----
-
-## ⚙️ 2. Backend: The Power and Security Engine  
-
-The backend is the **intelligent core** of the project, built with **Node.js + Express.js**. It manages all data, authentication, complaint workflows, and system automation.  
-
-### 🔑 Core Functionalities  
-- **User Management**  
-  - Secure registration/login with hashed passwords (`bcrypt`).  
-  - JWT-based authentication with **access & refresh tokens**.  
-  - Cryptographic email-based password reset.  
-
-- **Complaint Lifecycle**  
-  - New complaint stored in MongoDB with an entry in `ReportHistory`.  
-  - Admins can update status, assign departments, or upload resolution images.  
-  - Every change logged with timestamp + user ID for auditing.  
-
-### 🔒 Backend-Only Technicalities  
-- **Role-Based Access Control (RBAC)**  
-  - Middleware (`isAdmin`, `isSuperAdmin`, `isDepartmentAdmin`) enforces permissions.  
-  - Prevents unauthorized actions by regular users.  
-
-- **Automated Cron Jobs**  
-  - Run every 15 minutes.  
-  - Detect complaints pending >48 hours.  
-  - Send **emails + in-app notifications** to officials.  
-
-- **File & Media Handling**  
-  - `multer` middleware validates uploads (size & type).  
-  - Files stored in **Cloudinary**; local temp files auto-deleted.  
-
-- **Analytics Engine**  
-  - MongoDB aggregation pipelines compute:  
-    - Total complaints  
-    - Average resolution time  
-    - Department performance  
-  - Metrics update automatically on report changes.  
-
----
-
-## 👣 Typical Workflow  
-
-1. **Citizen Onboarding**  
-   - Register/login → JWT tokens issued.  
-   - Passwords securely hashed.  
-
-2. **Complaint Filing**  
-   - Citizen submits complaint with media + location.  
-   - Stored in DB → logged in `ReportHistory`.  
-
-3. **Admin Management**  
-   - Admin views complaints, updates status, assigns departments.  
-   - Immutable audit logs maintained.  
-
-4. **Automated Oversight**  
-   - Cron jobs flag overdue complaints.  
-   - Notifications ensure accountability.  
-
-5. **Citizen Tracking**  
-   - Citizens check status via "My Complaints".  
-   - Resolution history always accessible.  
-
----
-
-## 🛠️ Tech Stack  
-
-**Frontend**  
-- HTML, CSS, JavaScript  
-- Role-based dashboards  
-- Interactive maps & chatbot  
-
-**Backend**  
-- Node.js, Express.js  
-- MongoDB + Mongoose  
-- JWT, bcrypt  
-- Multer + Cloudinary  
-- Node-cron (schedulers)  
-- Nodemailer (emails)  
-
----
+No license specified.
