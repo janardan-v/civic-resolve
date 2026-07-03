@@ -183,7 +183,7 @@ const reportsAPI = {
 // Categories API endpoints
 const categoriesAPI = {
     getAll: () => {
-        return apiRequest('/api/v1/categories', {
+        return apiRequest('/api/v1/categories/all', {
             method: 'GET'
         });
     }

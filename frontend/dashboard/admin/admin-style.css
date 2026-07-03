@@ -410,9 +410,9 @@ header {
     color: #27ae60;
 }
 
-.status-closed {
-    background-color: #f4f6f7;
-    color: #7f8c8d;
+.status-rejected {
+    background-color: #ffd4d4;
+    color: #ff2929;
 }
 
 .priority-badge {

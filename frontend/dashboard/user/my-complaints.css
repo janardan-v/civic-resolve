@@ -378,21 +378,21 @@
 
     /* Corrected Sidebar - Mobile Off-canvas */
     .sidebar {
-        position: fixed;
-        left: -300px;
-        top: 0;
-        height: 100%;
-        width: 250px;
+        position: fixed !important;
+        left: -300px !important;
+        top: 0 !important;
+        height: 100% !important;
+        width: 250px !important;
         /* Explicitly set the width */
-        z-index: 1001;
-        transition: left 0.3s ease-in-out;
-        box-shadow: 20px 0 20px rgba(0, 0, 0, 0.3);
-        padding-top: 50px;
+        z-index: 1001 !important;
+        transition: left 0.3s ease-in-out !important;
+        box-shadow: 20px 0 20px rgba(0, 0, 0, 0.3) !important;
+        padding-top: 50px !important;
         /* Add some top padding */
     }
 
     .sidebar.active {
-        left: 0;
+        left: 0!important;
     }
 
     /* Hamburger Menu Icon */
@@ -456,11 +456,11 @@
     .main-content {
         padding: 20px 15px;
         overflow-x: hidden;
-        margin: 0;
+        margin: 0!important;
         /* Prevents horizontal scrolling from content overflow */
     }
 
     .stats-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr!important;
     }
 }

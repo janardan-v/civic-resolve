@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="complaint-tile-body">
                 <p><strong>Title:</strong> ${complaint.title}</p>
                 <p><strong>Category:</strong> ${complaint.categoryId?.name || 'N/A'}</p>
-                <p><strong>User:</strong> ${complaint.userId?.name || 'N/A'} (${complaint.userId?.email || ''})</p>
+                <p><strong>User:</strong> ${complaint.userId?.name || 'N/A'}</p>
                 <p><strong>Date:</strong> ${createdDate}</p>
             </div>
             <div class="complaint-tile-footer">
